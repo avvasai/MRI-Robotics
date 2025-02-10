@@ -1,0 +1,28 @@
+function [petri_center,petri_radius] = findPetri(current_frame)
+% Function used to locate the petri dish
+
+    current_frame = imread("snapshot3.png") %comment this out when you have to run the actual code
+    image = current_frame;
+    imshow(image);
+    % TODO: use im2bw to threshold the image and convert it to binary image
+    % you wll use the circle with maximum radius as the petri dish
+    %Calculating the graythresh hold using Otsu's method
+        %level = graythresh(image)
+    %Converting the image from colour to BW using averaged greyscale level
+        %image_white = im2bw(image,level);
+    %Alternative method to convert to black and white
+    image_white = imbinarize(image,'adaptive');
+    imshow(image_white);
+    %Finding the circle with a radius r pixels("Need to ask regarding which dimensions to use")
+    [centers,radii] = imfindcircles(image_white,[100 950])
+    centersStrong5 = centers(1:5,:); 
+    radiiStrong5 = radii(1:5);
+    viscircles(centersStrong5, radiiStrong5,'EdgeColor','b');
+%     
+   % k_max =  (radii == max(radii));
+   % petri_center = centers(k_max,:);
+   % petri_radius = radii(k_max);
+    
+
+end
+
