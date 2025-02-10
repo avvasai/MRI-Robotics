@@ -4,17 +4,27 @@ function [petri_center,petri_radius] = findPetri(current_frame)
     current_frame = imread("snapshot3.png") %comment this out when you have to run the actual code
     image = current_frame;
     imshow(image);
+    %To find the pixel length of the petri for claibration
+    % d = drawline;
+    % pos = d.Position;
+    % diffPos = diff(pos);
+    % dia = hypot(diffPos(1),diffPos(2));
+    % dia1 = round((dia -50)/2);
+    % dia2 = round((dia+50)/2);
     % TODO: use im2bw to threshold the image and convert it to binary image
     % you wll use the circle with maximum radius as the petri dish
     %Calculating the graythresh hold using Otsu's method
         %level = graythresh(image)
+        level = 0.3;
     %Converting the image from colour to BW using averaged greyscale level
-        %image_white = im2bw(image,level);
+        image_white = im2bw(image,level);
     %Alternative method to convert to black and white
-    image_white = imbinarize(image,'adaptive');
+    %image_white = imbinarize(image,'adaptive');
     imshow(image_white);
+   
+
     %Finding the circle with a radius r pixels("Need to ask regarding which dimensions to use")
-    [centers,radii] = imfindcircles(image_white,[100 950])
+    [centers,radii] = imfindcircles(image_white,[10 900],Sensitivity=0.92,Method="TwoStage")
     centersStrong5 = centers(1:5,:); 
     radiiStrong5 = radii(1:5);
     viscircles(centersStrong5, radiiStrong5,'EdgeColor','b');
