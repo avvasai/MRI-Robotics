@@ -13,7 +13,9 @@ singleFrame = read(videoObj, frame_number);
 
 %converting the image to HSV color space
 hsv_img = rgb2hsv(singleFrame);
-imshow(hsv_img)
+%cropping the image to the region of intrest
+cropped_image = imcrop(hsv_img); 
+imshow(cropped_image)
 
 [x, y] = getpts;
 

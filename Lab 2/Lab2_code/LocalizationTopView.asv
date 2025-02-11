@@ -31,16 +31,46 @@ r_val_max = 1;
 r_val_min = 0.95294;
 
 %Defining the Blue Region HSV Range
-b_hue_max = 0.62336; 
+% b_hue_max = 0.62336; 
+% b_hue_min = 0.61639;
+% b_sat_max = 1;
+% b_sat_min = 0.976;
+% b_val_max = 1;
+% b_val_min = 0.94902;
+
+b_hue_max = 0.83; 
 b_hue_min = 0.61639;
-b_sat_max = 1;
-b_sat_min = 0.976;
+b_sat_max = 0.043137;
+b_sat_min = 0;
 b_val_max = 1;
 b_val_min = 0.94902;
 
 %Creating a red binary mark
-r_mask = (hsv_img(:,:,1)>r_hue_min) & (hsv_img(:,:,1)<r_hue_max) & (hsv_img(:,:,1)>r_sat_min) & (hsv_img(:,:,1)<r_sat_max) &(hsv_img(:,:,1)>r_val_min) & (hsv_img(:,:,1)<r_val_max);
+r_mask = (hsv_img(:,:,1)>r_hue_min) & (hsv_img(:,:,1)<r_hue_max) & (hsv_img(:,:,2)>r_sat_min) & (hsv_img(:,:,2)<r_sat_max) &(hsv_img(:,:,3)>r_val_min) & (hsv_img(:,:,3)<r_val_max);
+b_mask = (hsv_img(:,:,1)>b_hue_min) & (hsv_img(:,:,1)<b_hue_max) & (hsv_img(:,:,2)>b_sat_min) & (hsv_img(:,:,2)<b_sat_max) &(hsv_img(:,:,3)>b_val_min) & (hsv_img(:,:,3)<b_val_max);
+comb_mask =(hsv_img(:,:,1)>r_hue_min) & (hsv_img(:,:,1)<r_hue_max) & (hsv_img(:,:,2)>r_sat_min) & (hsv_img(:,:,2)<r_sat_max) &(hsv_img(:,:,3)>r_val_min) & (hsv_img(:,:,3)<r_val_max) & (hsv_img(:,:,1)>b_hue_min) & (hsv_img(:,:,1)<b_hue_max) & (hsv_img(:,:,2)>b_sat_min) & (hsv_img(:,:,2)<b_sat_max) &(hsv_img(:,:,3)>b_val_min) & (hsv_img(:,:,3)<b_val_max);
+%Finding the connected components
+ccr = bwconncomp(r_mask);
+ccb = bwconncomp(b_mask);
+%find the properties of the red region
+r_region = regionprops(ccr, 'Area', 'Centroid', 'BoundingBox');
+%finding the properties of the blue region
+b_region = regionprops(ccb, 'Area', 'Centroid', 'BoundingBox');
 
+% Access properties of a specific region (e.g., the first region)
+%area = r_region(1).Area;
+%centroid = r_region(1).Centroid;
+%bbox = r_region(1).BoundingBox;
+
+%displaying the mask
+imshow(comb_mask); 
+hold on;
+for i = 1:numel(r_region)
+    rectangle('Position', r_region(i).BoundingBox, 'EdgeColor', 'r');
+end
+for i = 1:numel(b_region)
+    rectangle('Position', b_region(i).BoundingBox, 'EdgeColor', 'b');
+end
 
 % output example: 
 %   x: x coordinate of the robot in pixel coordinate

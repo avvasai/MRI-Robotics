@@ -31,34 +31,41 @@ r_val_max = 1;
 r_val_min = 0.95294;
 
 %Defining the Blue Region HSV Range
-b_hue_max = 0.62336; 
+b_hue_max = 0.8333; 
 b_hue_min = 0.61639;
 b_sat_max = 1;
-b_sat_min = 0.976;
+b_sat_min = 0.876;
 b_val_max = 1;
 b_val_min = 0.94902;
 
 %Creating a red binary mark
 r_mask = (hsv_img(:,:,1)>r_hue_min) & (hsv_img(:,:,1)<r_hue_max) & (hsv_img(:,:,2)>r_sat_min) & (hsv_img(:,:,2)<r_sat_max) &(hsv_img(:,:,3)>r_val_min) & (hsv_img(:,:,3)<r_val_max);
+b_mask = (hsv_img(:,:,1)>b_hue_min) & (hsv_img(:,:,1)<b_hue_max) & (hsv_img(:,:,2)>b_sat_min) & (hsv_img(:,:,2)<b_sat_max) &(hsv_img(:,:,3)>b_val_min) & (hsv_img(:,:,3)<b_val_max);
+%comb_mask =(hsv_img(:,:,1)>r_hue_min) & (hsv_img(:,:,1)<r_hue_max) & (hsv_img(:,:,2)>r_sat_min) & (hsv_img(:,:,2)<r_sat_max) &(hsv_img(:,:,3)>r_val_min) & (hsv_img(:,:,3)<r_val_max) & (hsv_img(:,:,1)>b_hue_min) & (hsv_img(:,:,1)<b_hue_max) & (hsv_img(:,:,2)>b_sat_min) & (hsv_img(:,:,2)<b_sat_max) &(hsv_img(:,:,3)>b_val_min) & (hsv_img(:,:,3)<b_val_max);
 %Finding the connected components
-cc = bwconncomp(r_mask);
-
+ccr = bwconncomp(r_mask);
+ccb = bwconncomp(b_mask);
 %find the properties of the red region
-stats = regionprops(cc, 'Area', 'Centroid', 'BoundingBox');
+r_region = regionprops(ccr, 'Area', 'Centroid', 'BoundingBox');
+%finding the properties of the blue region
+b_region = regionprops(ccb, 'Area', 'Centroid', 'BoundingBox');
 
 % Access properties of a specific region (e.g., the first region)
-area = stats(1).Area;
-centroid = stats(1).Centroid;
-bbox = stats(1).BoundingBox;
+%area = r_region(1).Area;
+%centroid = r_region(1).Centroid;
+%bbox = r_region(1).BoundingBox;
 
 %displaying the mask
-imshow(r_mask); 
+imshow(b_mask); 
 hold on;
-for i = 1:numel(stats)
-
-    rectangle('Position', stats(i).BoundingBox, 'EdgeColor', 'r');
-
+for i = 1:numel(r_region)
+    rectangle('Position', r_region(i).BoundingBox, 'EdgeColor', 'r');
 end
+for i = 1:numel(b_region)
+    rectangle('Position', b_region(i).BoundingBox, 'EdgeColor', 'b');
+end
+%rectangle('Position', r_region(i).Centroid, 'EdgeColor', 'g');
+
 
 % output example: 
 %   x: x coordinate of the robot in pixel coordinate
