@@ -11,12 +11,24 @@ frame_number = round(1543/2);
 % Read the specified frame
 singleFrame = read(videoObj, frame_number);
 % Display the extracted frame
-imshow(singleFrame);
+%imshow(singleFrame);
 
 
 % TODO: The following gives a example to find two a red region and a blue region
 % Use your designed localization method to localize your robot. You can
 % change the output to names as well. 
+
+%converting the image to HSV color space
+hsv_img = rgb2hsv(singleFrame);
+imshow(hsv_img)
+
+%Defining the Red Region HSV Range
+red_hue_min = 0.1; 
+red_hue_max = 0.2;
+red_sat_min = 0.5;
+red_sat_max = 1;
+red_val_min = 0.2;
+red_val_max = 1;
 
 % output example: 
 %   x: x coordinate of the robot in pixel coordinate
