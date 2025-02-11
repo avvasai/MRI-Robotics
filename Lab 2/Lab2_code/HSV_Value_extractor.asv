@@ -24,17 +24,8 @@ imshow(hsv_img)
 %Going through a for loo and extracting the HUE Satruration and Val of a
 %point
 for i = 1:length(x)
-    hue(i) = hsv_img(round(y(i)), round(x(i)), 1);
-    saturation(i) = hsv_img(round(y(i)), round(x(i)), 2);
-    value(i) = hsv_img(round(y(i)), round(x(i)), 3);
+    hue(i) = hue = hsv_img(y, x, 1);
 end
-% % Display the extracted HSV values
-disp(['Max Hue: ', num2str(max(hue))]);
-disp(['Min Hue: ', num2str(min(hue))]);
-disp(['Max Saturation: ', num2str(max(saturation))]);
-disp(['Min Saturation: ', num2str(min(saturation))]);
-disp(['MaxValue: ', num2str(max(value))]);
-disp(['Min Value: ', num2str(min(value))]);
 
 
 % % Access the HSV values at that point
