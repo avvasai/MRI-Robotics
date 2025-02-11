@@ -44,7 +44,7 @@ function [petri_center,petri_radius] = findPetri(current_frame)
    k_max =  find(radii == max(radii));
    petri_center = centers(k_max,:);
    petri_radius = radii(k_max);
-   viscircles(petri_center, petri_radius,'EdgeColor','b');
+   %viscircles(petri_center, petri_radius,'EdgeColor','b');
     
 
 end
