@@ -9,9 +9,9 @@
      %pos = d.Position;
      %diffPos = diff(pos);
      %dia = hypot(diffPos(1),diffPos(2));
-     dia = 932.5495;
-     dia1 = round((dia -50)/2 - 241);
-     dia2 = round((dia+50)/2);
+      dia = 932.5495;
+      dia1 = round((dia -50)/2 - 241);
+      dia2 = round((dia+50)/2);
     % TODO: use im2bw to threshold the image and convert it to binary image
     % you wll use the circle with maximum radius as the petri dish
     %Calculating the graythresh hold using Otsu's method
@@ -29,13 +29,15 @@
     %Finding the 10 max radii in the array of radii
     temp_radii = sort(radii,'descend');
     temp_radii= temp_radii(1:20);
-    for i in temp_radii
-        
+    for i = 1:length(temp_radii)
+         trow = 0;
+         trow = find(radii==temp_radii(i))
+         temp_index= trow(1)
     end
-    %temp_index;
-    %centersStrong5 = centers(1:numel(centers)-1,:); 
-    %radiiStrong5 = radii(1:numel(radii)-1);
-    viscircles(centers, radii,'EdgeColor','b');
+    temp_index = temp_index';
+    centersStrong5 = centers(1:temp_index,:); 
+    radiiStrong5 = radii(1:temp_index);
+    %viscircles(centers, radii,'EdgeColor','b');
 %     
    % k_max =  (radii == max(radii));
    % petri_center = centers(k_max,:);

@@ -1,7 +1,7 @@
 %function [petri_center,petri_radius] = findPetri(current_frame)
 % Function used to locate the petri dish
 
-    current_frame = imread("snapshot3.png") %comment this out when you have to run the actual code
+    current_frame = imread("snapshot3.png"); %comment this out when you have to run the actual code
     image = current_frame;
     imshow(image);
     %To find the pixel length of the petri for claibration
@@ -10,8 +10,8 @@
      %diffPos = diff(pos);
      %dia = hypot(diffPos(1),diffPos(2));
       dia = 932.5495;
-      dia1 = round((dia -50)/2 - 241);
-      dia2 = round((dia+50)/2);
+      dia1 = round((dia -50)/2 - 50);
+      dia2 = round((dia+50)/2)+50;
     % TODO: use im2bw to threshold the image and convert it to binary image
     % you wll use the circle with maximum radius as the petri dish
     %Calculating the graythresh hold using Otsu's method
@@ -25,21 +25,26 @@
    
 
     %Finding the circle with a radius r pixels("Need to ask regarding which dimensions to use")
-    [centers,radii] = imfindcircles(image_white,[10 dia2],Sensitivity=0.92,Method="TwoStage")
-    %Finding the 10 max radii in the array of radii
-    temp_radii = sort(radii,'descend');
-    temp_radii= temp_radii(1:20);
-    % for i = 1:length(radii)
-    %     temp_index(i)= find(radii,temp_radii(i))
+    [centers,radii] = imfindcircles(image_white,[dia1 dia2],Sensitivity=0.92,Method="TwoStage");
+    % %Finding the 20 max radii in the array of radii
+    % temp_radii = sort(radii,'descend');
+    % temp_radii= temp_radii(1:20);
+    % for i = 1:length(temp_radii)
+    %      trow = 0;
+    %      trow = find(radii==temp_radii(i));
+    %      temp_index(i)= trow(1);
     % end
-    %temp_index;
-    %centersStrong5 = centers(1:numel(centers)-1,:); 
-    %radiiStrong5 = radii(1:numel(radii)-1);
-    viscircles(centers, radii,'EdgeColor','b');
+    %temp_index = temp_index';
+    % for i = 1:length(temp_index)
+    % centersStrong5(i,1) = centers(temp_index(i),1);
+    % centersStrong5(i,2) = centers(temp_index(i),2);
+    % radiiStrong5(i) = radii(temp_index(i));
+    % end
 %     
-   % k_max =  (radii == max(radii));
-   % petri_center = centers(k_max,:);
-   % petri_radius = radii(k_max);
+   k_max =  find(radii == max(radii));
+   petri_center = centers(k_max,:);
+   petri_radius = radii(k_max);
+   viscircles(petri_center, petri_radius,'EdgeColor','b');
     
 
 %end
