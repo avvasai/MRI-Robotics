@@ -1,4 +1,4 @@
-%function [petri_center,petri_radius] = findPetri(current_frame)
+function [petri_center,petri_radius] = findPetri(current_frame)
 % Function used to locate the petri dish
 
     current_frame = imread("snapshot3.png"); %comment this out when you have to run the actual code
@@ -47,5 +47,5 @@
    viscircles(petri_center, petri_radius,'EdgeColor','b');
     
 
-%end
+end
 
