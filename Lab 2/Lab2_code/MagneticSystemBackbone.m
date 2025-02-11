@@ -71,12 +71,12 @@ settings.videoRecording_on = 1;
 
 % TODO3: once you are done with find_petri, uncomment the following line of
 % code, you should see a dot representing the center of the petri dish
-%  plot(handles.data.petri_center(1),handles.data.petri_center(2),'bo','parent',ax)
+ plot(handles.data.petri_center(1),handles.data.petri_center(2),'bo','parent',ax)
 
 % TODO4: find the relationship between the pixel coordinate and robot
 % coordinate, ie find scalar using the petri dish diamter in pixels and in
 % meters
-%'scalar = ; % m/pixel
+scalar = 0.085/(handles.data.petri_radius*2); % m/pixel
 
 %% initialize control related parameters
 
