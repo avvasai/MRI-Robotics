@@ -2,7 +2,7 @@ function [x, y, theta,isLocWorking,red_centroid,blue_centroid] = LocalizationTop
 % Function to localize the magnetic robot
 
 %% Training part of the file
-
+%{
 videoFile = 'Camera2.avi';
 % Create a VideoReader object
 videoObj = VideoReader(videoFile);
@@ -12,11 +12,11 @@ frame_number = randi([1 videoObj.NumFrames]); %round(1543/2);
 singleFrame = read(videoObj, frame_number);
 % Display the extracted frame
 %imshow(singleFrame);
-
+%}
 
 
 %converting the image to HSV color space
-hsv_img = rgb2hsv(singleFrame); %change input to singleFrame if training
+hsv_img = rgb2hsv(current_frame); %change input to singleFrame if training
 
 
 % TODO: The following gives a example to find two a red region and a blue region
@@ -77,7 +77,7 @@ else
     %blue_centroid = mean(cat(1, b_region.Centroid));
 
     % weighted centroids 
-    [red_centroid, blue_centroid] = weightedCentroids(r_region, b_region)
+    [red_centroid, blue_centroid] = weightedCentroids(r_region, b_region);
 
     theta = atan2((blue_centroid(2)-red_centroid(2)),((blue_centroid(1)-red_centroid(1)))); %atan2((y2-y1),(x2-x1))
     
@@ -91,7 +91,7 @@ else
 end
 
 %% displaying the mask
-
+%{
 imshow(b_mask); 
 hold on;
 for i = 1:numel(r_region)
@@ -102,7 +102,7 @@ for i = 1:numel(b_region)
 end
 
 plot(x,y, 'g*')
-
+%}
 
 %rectangle('Position', r_region(i).Centroid, 'EdgeColor', 'g');
 
