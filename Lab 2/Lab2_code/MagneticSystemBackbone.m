@@ -76,7 +76,7 @@ settings.videoRecording_on = 1;
 % TODO4: find the relationship between the pixel coordinate and robot
 % coordinate, ie find scalar using the petri dish diamter in pixels and in
 % meters
-scalar = 0.085/(handles.data.petri_radius*2); % m/pixel
+scalar = 0.085/(handles.data.petri_radius*2); % m/pixels
 
 %% initialize control related parameters
 
@@ -88,8 +88,8 @@ if (settings.localization_on)
     [handles.data.image.curr_x, handles.data.image.curr_y, handles.data.curr_theta,handles.data.isLocWorking,red_centroid,blue_centroid] = LocalizationTopView(current_frame);
     % TODO6: convert the image coordinate to the world coordinates (center
     % of the petri dish will be the origin, downwards is positive y and rightward is positive x)
-%     'handles.data.curr_x =
-%     'handles.data.curr_y =
+     handles.data.curr_x = handles.data.image.curr_x*scalar;
+     handles.data.curr_y = handles.data.image.curr_y*scalar;
 else
     handles.data.curr_x = 0;
     handles.data.curr_y = 0;
