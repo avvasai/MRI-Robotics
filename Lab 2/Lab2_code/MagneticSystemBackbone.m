@@ -187,8 +187,9 @@ while (~FS.Stop()&&~handles.data.goalReached)
     % TODO9: save all the necessary data such as curr_x, curr_y, curr_theta, etc into experimentdata.
     % Create a function to plot the robot path. Use x, y, and theta in
     % robot coordinates to represent the robot location and orientation. 
-    experimentdata = [experimentdata; handles.data.last_t coil_currents(1) coil_currents(2) coil_currents(3)...
-        coil_currents(4)];
+    %experimentdata = [experimentdata; handles.data.last_t coil_currents(1) coil_currents(2) coil_currents(3)...
+        %coil_currents(4)];
+    experimentdata = [experimentdata; handles.data.image.curr_x handles.data.image.curr_y handles.data.image.curr_theta];
     
     
     
