@@ -1,8 +1,8 @@
-function [x, y, theta,isLocWorking,red_centroid,blue_centroid] = LocalizationTopView(current_frame)
+%function [x, y, theta,isLocWorking,red_centroid,blue_centroid] = LocalizationTopView(current_frame)
 % Function to localize the magnetic robot
 
 %% Training part of the file
-%{
+
 videoFile = 'Camera2.avi';
 % Create a VideoReader object
 videoObj = VideoReader(videoFile);
@@ -13,10 +13,10 @@ singleFrame = read(videoObj, frame_number);
 % Display the extracted frame
 %imshow(singleFrame);
 
-%}
+
 
 %converting the image to HSV color space
-hsv_img = rgb2hsv(current_frame); %change input to singleFrame if training
+hsv_img = rgb2hsv(singleFrame); %change input to singleFrame if training
 
 
 % TODO: The following gives a example to find two a red region and a blue region
@@ -65,12 +65,16 @@ b_region = regionprops(ccb, 'Area', 'Centroid', 'BoundingBox');
 red_centroid = mean(cat(1, r_region.Centroid));
 blue_centroid = mean(cat(1, b_region.Centroid));
 
+if isnan(red_centroid) || isnan(blue_centroid)
+
 theta = atan2((blue_centroid(2)-red_centroid(2)),((blue_centroid(1)-red_centroid(1)))); %atan2((y2-y1),(x2-x1))
 
 robot_center = mean(cat(1, red_centroid,blue_centroid));
 
 x = robot_center(1);
 y = robot_center(2);
+
+isLocWorking = 1; %TODO: logic to define whether this is true or not
 
 %% displaying the mask
 %{
@@ -109,7 +113,7 @@ disp("Localization Failed")
 isLocWorking = 0;
 %}
 
-end
+%end
 
 
 
