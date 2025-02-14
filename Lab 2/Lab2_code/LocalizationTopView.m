@@ -2,7 +2,7 @@ function [x, y, theta,isLocWorking,red_centroid,blue_centroid] = LocalizationTop
 % Function to localize the magnetic robot
 
 %% Training part of the file
-%{
+
 videoFile = 'Camera2.avi';
 % Create a VideoReader object
 videoObj = VideoReader(videoFile);
@@ -12,11 +12,11 @@ frame_number = randi([1 videoObj.NumFrames]); %round(1543/2);
 singleFrame = read(videoObj, frame_number);
 % Display the extracted frame
 %imshow(singleFrame);
-%}
+
 
 
 %converting the image to HSV color space
-hsv_img = rgb2hsv(current_frame); %change input to singleFrame if training
+hsv_img = rgb2hsv(singleFrame); %change input to singleFrame if training
 
 
 % TODO: The following gives a example to find two a red region and a blue region
@@ -61,11 +61,7 @@ b_region = regionprops(ccb, 'Area', 'Centroid', 'BoundingBox');
 %bbox = r_region(1).BoundingBox;
 
 %% function outputs
-% get the average centroid
-red_centroid = mean(cat(1, r_region.Centroid));
-blue_centroid = mean(cat(1, b_region.Centroid));
-
-if any(isnan(red_centroid)) || any(isnan(blue_centroid))
+if isempty(r_region) || isempty(blue_centroid)
     % if localization failed, output the following   
     x = 0;
     y = 0;
@@ -74,8 +70,14 @@ if any(isnan(red_centroid)) || any(isnan(blue_centroid))
     blue_centroid = [0,0];
     disp("Localization Failed")
     isLocWorking = 0;
-    
+
 else
+    % get the average centroid
+    %red_centroid = mean(cat(1, r_region.Centroid));
+    %blue_centroid = mean(cat(1, b_region.Centroid));
+
+    % weighted centroids 
+    [red_centroid, blue_centroid] = weightedCentroids(r_region, b_region)
 
     theta = atan2((blue_centroid(2)-red_centroid(2)),((blue_centroid(1)-red_centroid(1)))); %atan2((y2-y1),(x2-x1))
     
@@ -89,7 +91,7 @@ else
 end
 
 %% displaying the mask
-%{
+
 imshow(b_mask); 
 hold on;
 for i = 1:numel(r_region)
@@ -100,7 +102,7 @@ for i = 1:numel(b_region)
 end
 
 plot(x,y, 'g*')
-%}
+
 
 %rectangle('Position', r_region(i).Centroid, 'EdgeColor', 'g');
 
@@ -112,7 +114,32 @@ plot(x,y, 'g*')
 %   isLocWorking: boolean showing if localization is working or not
 %   red_centroid: centroid of red region
 %   blue_centroid: centroid of blue region
+end
 
+%% Helper functions
+function [red_centroid, blue_centroid] = weightedCentroids(r_region, b_region)
+%calculates weighted centroids of red and blue regions
+redA = sum(cat(1,r_region.Area));
+red_Ai = (cat(1,r_region.Area));
+red_C_i = cat(1,r_region.Centroid);
+red_Cx_i = red_C_i(:,1);
+red_Cy_i = red_C_i(:,2);
+
+r_Cx = dot(red_Cx_i, red_Ai)/redA;
+r_Cy = dot(red_Cy_i, red_Ai)/redA;
+
+red_centroid = [r_Cx r_Cy];
+
+blueA = sum(cat(1,b_region.Area));
+blue_Ai = (cat(1,b_region.Area));
+blue_C_i = cat(1,b_region.Centroid);
+blue_Cx_i = blue_C_i(:,1);
+blue_Cy_i = blue_C_i(:,2);
+
+b_Cx = dot(blue_Cx_i, blue_Ai)/blueA;
+b_Cy = dot(blue_Cy_i, blue_Ai)/blueA;
+
+blue_centroid = [b_Cx b_Cy];
 
 end
 
