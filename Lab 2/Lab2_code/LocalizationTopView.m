@@ -12,8 +12,8 @@ frame_number = randi([1 videoObj.NumFrames]); %round(1543/2);
 singleFrame = read(videoObj, frame_number);
 % Display the extracted frame
 %imshow(singleFrame);
-
 %}
+
 
 %converting the image to HSV color space
 hsv_img = rgb2hsv(current_frame); %change input to singleFrame if training
@@ -65,14 +65,28 @@ b_region = regionprops(ccb, 'Area', 'Centroid', 'BoundingBox');
 red_centroid = mean(cat(1, r_region.Centroid));
 blue_centroid = mean(cat(1, b_region.Centroid));
 
-theta = atan2((blue_centroid(2)-red_centroid(2)),((blue_centroid(1)-red_centroid(1)))); %atan2((y2-y1),(x2-x1))
+if any(isnan(red_centroid)) || any(isnan(blue_centroid))
+    % if localization failed, output the following   
+    x = 0;
+    y = 0;
+    theta = 0;
+    red_centroid = [0,0];
+    blue_centroid = [0,0];
+    disp("Localization Failed")
+    isLocWorking = 0;
+    
+else
 
-robot_center = mean(cat(1, red_centroid,blue_centroid));
+    theta = atan2((blue_centroid(2)-red_centroid(2)),((blue_centroid(1)-red_centroid(1)))); %atan2((y2-y1),(x2-x1))
+    
+    robot_center = mean(cat(1, red_centroid,blue_centroid));
+    
+    x = robot_center(1);
+    y = robot_center(2);
+    
+    isLocWorking = 1; 
 
-x = robot_center(1);
-y = robot_center(2);
-
-isLocWorking = 1; %TODO: logic to define whether this is true or not
+end
 
 %% displaying the mask
 %{
@@ -99,17 +113,6 @@ plot(x,y, 'g*')
 %   red_centroid: centroid of red region
 %   blue_centroid: centroid of blue region
 
-
-%% if localization failed, output the following
-%{
-x = 0;
-y = 0;
-theta = 0;
-red_centroid = [0,0];
-blue_centroid = [0,0];
-disp("Localization Failed")
-isLocWorking = 0;
-%}
 
 end
 
