@@ -189,7 +189,7 @@ while (~FS.Stop()&&~handles.data.goalReached)
     % robot coordinates to represent the robot location and orientation. 
     %experimentdata = [experimentdata; handles.data.last_t coil_currents(1) coil_currents(2) coil_currents(3)...
         %coil_currents(4)];
-    experimentdata = [experimentdata; handles.data.image.curr_x handles.data.image.curr_y handles.data.image.curr_theta];
+    experimentdata = [experimentdata; handles.data.last_t handles.data.curr_x handles.data.curr_y handles.data.curr_theta];
     
     
     
