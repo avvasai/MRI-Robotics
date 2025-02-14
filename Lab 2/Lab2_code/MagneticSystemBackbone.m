@@ -139,8 +139,8 @@ while (~FS.Stop()&&~handles.data.goalReached)
     
     % TODO7: uncomment the following lines and convert the image coordinate 
     % to the world coordinates. Finish joystick control first
-%     'handles.data.curr_x = ;
-%     'handles.data.curr_y = ;
+    handles.data.curr_x = handles.data.image.curr_x*scalar;
+    handles.data.curr_y = handles.data.image.curr_y*scalar;
     
     t_processing = toc; % current time
     
@@ -158,22 +158,22 @@ while (~FS.Stop()&&~handles.data.goalReached)
           % TODO8: uncomment the following section once you are done with localozatio and orientation of the robot
 %*************************************************************************
         % frame visualization + any indicators can be added on
-%         handles.graphics.Orientation.XData = [red_centroid(:,1),blue_centroid(:,1)];
-%         handles.graphics.Orientation.YData = [red_centroid(:,2),blue_centroid(:,2)];
-%         
-%         handles.data.frameRateCam = 1/handles.data.dt;
-%         handles.graphics.framerate.String = ['Frame Rate ', num2str(handles.data.frameRateCam)];
-%         handles.graphics.Xgradient.String = ['X ', num2str(handles.data.curr_x*1000)];
-%         handles.graphics.Ygradient.String = ['Y ', num2str(handles.data.curr_y*1000)];
-%         
-%         if(~handles.data.isLocWorking)
-%             disp("Localization not working")
-%         else
-%             c = [handles.data.image.curr_x, handles.data.image.curr_y];
-%             %         plot(c(:,1),c(:,2),'r*')
-%             handles.graphics.hMarker.XData = handles.data.image.curr_x;
-%             handles.graphics.hMarker.YData = handles.data.image.curr_y;
-%         end
+        handles.graphics.Orientation.XData = [red_centroid(:,1),blue_centroid(:,1)];
+        handles.graphics.Orientation.YData = [red_centroid(:,2),blue_centroid(:,2)];
+
+        handles.data.frameRateCam = 1/handles.data.dt;
+        handles.graphics.framerate.String = ['Frame Rate ', num2str(handles.data.frameRateCam)];
+        handles.graphics.Xgradient.String = ['X ', num2str(handles.data.curr_x*1000)];
+        handles.graphics.Ygradient.String = ['Y ', num2str(handles.data.curr_y*1000)];
+
+        if(~handles.data.isLocWorking)
+            disp("Localization not working")
+        else
+            c = [handles.data.image.curr_x, handles.data.image.curr_y];
+            %         plot(c(:,1),c(:,2),'r*')
+            handles.graphics.hMarker.XData = handles.data.image.curr_x;
+            handles.graphics.hMarker.YData = handles.data.image.curr_y;
+        end
 %*************************************************************************
      end
     
