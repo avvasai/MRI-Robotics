@@ -61,13 +61,7 @@ b_region = regionprops(ccb, 'Area', 'Centroid', 'BoundingBox');
 %bbox = r_region(1).BoundingBox;
 
 %% function outputs
-% get the average centroid
-%red_centroid = mean(cat(1, r_region.Centroid));
-%blue_centroid = mean(cat(1, b_region.Centroid));
-
-[red_centroid, blue_centroid] = weightedCentroids(r_region, b_region);
-
-if any(isnan(red_centroid)) || any(isnan(blue_centroid))
+if isempty(r_region) || isempty(blue_centroid)
     % if localization failed, output the following   
     x = 0;
     y = 0;
@@ -78,6 +72,12 @@ if any(isnan(red_centroid)) || any(isnan(blue_centroid))
     isLocWorking = 0;
 
 else
+    % get the average centroid
+    %red_centroid = mean(cat(1, r_region.Centroid));
+    %blue_centroid = mean(cat(1, b_region.Centroid));
+
+    % weighted centroids 
+    [red_centroid, blue_centroid] = weightedCentroids(r_region, b_region)
 
     theta = atan2((blue_centroid(2)-red_centroid(2)),((blue_centroid(1)-red_centroid(1)))); %atan2((y2-y1),(x2-x1))
     
@@ -91,7 +91,7 @@ else
 end
 
 %% displaying the mask
-%{
+
 imshow(b_mask); 
 hold on;
 for i = 1:numel(r_region)
@@ -102,7 +102,7 @@ for i = 1:numel(b_region)
 end
 
 plot(x,y, 'g*')
-%}
+
 
 %rectangle('Position', r_region(i).Centroid, 'EdgeColor', 'g');
 
@@ -114,11 +114,9 @@ plot(x,y, 'g*')
 %   isLocWorking: boolean showing if localization is working or not
 %   red_centroid: centroid of red region
 %   blue_centroid: centroid of blue region
-
-
 end
 
-
+%% Helper functions
 function [red_centroid, blue_centroid] = weightedCentroids(r_region, b_region)
 %calculates weighted centroids of red and blue regions
 redA = sum(cat(1,r_region.Area));
