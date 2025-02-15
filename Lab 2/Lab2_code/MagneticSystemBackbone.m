@@ -191,7 +191,13 @@ while (~FS.Stop()&&~handles.data.goalReached)
     %experimentdata = [experimentdata; handles.data.last_t coil_currents(1) coil_currents(2) coil_currents(3)...
         %coil_currents(4)];
     experimentdata = [experimentdata; handles.data.last_t, handles.data.curr_x, handles.data.curr_y, handles.data.curr_theta];
-
+    figure(); 
+    yyaxis left; 
+    plot(t,x,'b',t,y,'r'); xlabel('Time in seconds'); ylabel('Robot location (x,y) in m'); 
+    
+    yyaxis right; 
+    plot(t,theta,'k'); legend('x','y','theta'); ylabel('Robot orientation theta in rad'); 
+    title('Robot coordinates and orientation vs time');
     
     
     
