@@ -71,7 +71,7 @@ settings.videoRecording_on = 1;
 
 % TODO3: once you are done with find_petri, uncomment the following line of
 % code, you should see a dot representing the center of the petri dish
- plot(handles.data.petri_center(1),handles.data.petri_center(2),'bo','parent',ax)
+plot(handles.data.petri_center(1),handles.data.petri_center(2),'bo','parent',ax)
 
 % TODO4: find the relationship between the pixel coordinate and robot
 % coordinate, ie find scalar using the petri dish diamter in pixels and in
@@ -88,8 +88,8 @@ if (settings.localization_on)
     [handles.data.image.curr_x, handles.data.image.curr_y, handles.data.curr_theta,handles.data.isLocWorking,red_centroid,blue_centroid] = LocalizationTopView(current_frame);
     % TODO6: convert the image coordinate to the world coordinates (center
     % of the petri dish will be the origin, downwards is positive y and rightward is positive x)
-     handles.data.curr_x = handles.data.image.curr_x*scalar;
-     handles.data.curr_y = handles.data.image.curr_y*scalar;
+    handles.data.curr_x = handles.data.image.curr_x*scalar;
+    handles.data.curr_y = handles.data.image.curr_y*scalar;
 else
     handles.data.curr_x = 0;
     handles.data.curr_y = 0;
@@ -131,32 +131,32 @@ all_s = {};
 tic
 
 while (~FS.Stop()&&~handles.data.goalReached)
-    
+
     current_frame = getimage(im);
     if (settings.localization_on)
         [handles.data.image.curr_x, handles.data.image.curr_y, handles.data.curr_theta,handles.data.isLocWorking,red_centroid,blue_centroid] = LocalizationTopView(current_frame);
     end
-    
-    % TODO7: uncomment the following lines and convert the image coordinate 
+
+    % TODO7: uncomment the following lines and convert the image coordinate
     % to the world coordinates. Finish joystick control first
     handles.data.curr_x = handles.data.image.curr_x*scalar;
     handles.data.curr_y = handles.data.image.curr_y*scalar;
-    
+
     t_processing = toc; % current time
-    
-    
+
+
     if (settings.closedloop_control_on && handles.data.isLocWorking) % close loop control
-        
+
     else % joystick controller on
         [u] = JoystickActuation(handles.joy)
     end
-    
+
     coil_currents = MapInputtoCoilCurrents(u, settings);  % calculate the coil current command
     ArduinoCommunication(coil_currents, handles.arduino); % send coil current command to arduino
-    
+
     if(settings.localization_on)
-          % TODO8: uncomment the following section once you are done with localozatio and orientation of the robot
-%*************************************************************************
+        % TODO8: uncomment the following section once you are done with localozatio and orientation of the robot
+        %*************************************************************************
         % frame visualization + any indicators can be added on
         handles.graphics.Orientation.XData = [red_centroid(:,1),blue_centroid(:,1)];
         handles.graphics.Orientation.YData = [red_centroid(:,2),blue_centroid(:,2)];
@@ -175,51 +175,53 @@ while (~FS.Stop()&&~handles.data.goalReached)
             handles.graphics.hMarker.XData = handles.data.image.curr_x;
             handles.graphics.hMarker.YData = handles.data.image.curr_y;
         end
-%*************************************************************************
-     end
-    
-   
-    
+        %*************************************************************************
+    end
+
+
+
     % for data saving
     handles.data.prev_t = handles.data.last_t;
     handles.data.last_t = toc;
     handles.data.dt = handles.data.last_t - handles.data.prev_t;
-    
+
     % TODO9: save all the necessary data such as curr_x, curr_y, curr_theta, etc into experimentdata.
     % Create a function to plot the robot path. Use x, y, and theta in
-    % robot coordinates to represent the robot location and orientation. 
+    % robot coordinates to represent the robot location and orientation.
     %experimentdata = [experimentdata; handles.data.last_t coil_currents(1) coil_currents(2) coil_currents(3)...
-        %coil_currents(4)];
+    %coil_currents(4)];
     experimentdata = [experimentdata; handles.data.last_t, handles.data.curr_x, handles.data.curr_y, handles.data.curr_theta];
 
-    figure(2);
-    hold on
-    yyaxis left; 
-    t = experimentdata(:,1); x = experimentdata(:,2); y = experimentdata(:,3); theta = experimentdata(:,4);
-    plot(t,x,'b',t,y,'r'); xlabel('Time in seconds'); ylabel('Robot location (x,y) in m'); 
-    
-    yyaxis right; 
-    plot(t,theta,'k'); legend('x','y','theta'); ylabel('Robot orientation theta in rad'); 
-    title('Robot coordinates and orientation vs time');
-    
-    
-    
-    
-    % get the current frame with the markers 
+    % plot made after the while loop
+
+
+
+    % get the current frame with the markers
     frame = getframe(ax);
     if (settings.videoRecording_on)
         writeVideo(v,frame);
     end
-    
-    % record the image frames 
+
+    % record the image frames
     if (isempty(all_frames))
         all_frames = frame;
     else
         all_frames(:,:,:, end+1) = frame;
     end
-    
-    
+
+
 end
+
+% plot experiment data after the while loop
+figure();
+yyaxis left;
+t = experimentdata(:,1); x = experimentdata(:,2); y = experimentdata(:,3); theta = experimentdata(:,4);
+plot(t,x,'b',t,y,'r'); xlabel('Time in seconds'); ylabel('Robot location (x,y) in m');
+
+yyaxis right;
+plot(t,theta,'k'); legend('x','y','theta'); ylabel('Robot orientation theta in rad');
+title('Robot coordinates and orientation vs time');
+
 if (settings.videoRecording_on)
     close(v);
 end
