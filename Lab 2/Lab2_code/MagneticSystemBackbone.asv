@@ -33,7 +33,7 @@ axes(ax); hold on
 
 % marker for the current location and the target location
 handles.graphics.hMarker = ...
-    scatter(-10, -10, 'filled', 'dm','Parent', ax);
+    scatter(-10, -10, 'filled', 'dy','Parent', ax);
 handles.graphics.gMarker = ...
     scatter(-10, -10, 'p', 'dg','Parent', ax);
 
@@ -192,7 +192,7 @@ while (~FS.Stop()&&~handles.data.goalReached)
         %coil_currents(4)];
     experimentdata = [experimentdata; handles.data.last_t, handles.data.curr_x, handles.data.curr_y, handles.data.curr_theta];
 
-    
+    % plot made after the while loop 
     
     
     
@@ -211,6 +211,17 @@ while (~FS.Stop()&&~handles.data.goalReached)
     
     
 end
+
+% plot experiment data after the while loop
+    figure();
+    yyaxis left; 
+    t = experimentdata(:,1); x = experimentdata(:,2); y = experimentdata(:,3); theta = experimentdata(:,4);
+    plot(t,x,'b',t,y,'r'); xlabel('Time in seconds'); ylabel('Robot location (x,y) in m'); 
+    
+    yyaxis right; 
+    plot(t,theta,'k'); legend('x','y','theta'); ylabel('Robot orientation theta in rad'); 
+    title('Robot coordinates and orientation vs time');
+
 if (settings.videoRecording_on)
     close(v);
 end
@@ -226,6 +237,7 @@ if (settings.saveon)
     save('actuation_signals.mat', 'experimentdata') %this is coil signals and other necessary data
     save('image_frames.mat', 'all_frames') % this is image frames 2D
 end
+
 
 %clear up variables
 stoppreview(handles.video)
