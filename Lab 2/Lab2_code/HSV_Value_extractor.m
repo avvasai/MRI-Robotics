@@ -1,21 +1,21 @@
 clc
 clear all
 % Training part of the file
-videoFile = 'Camera2.avi';
+videoFile = 'Camera.avi';
 % Create a VideoReader object
 videoObj = VideoReader(videoFile);
 % Get the frame you want (e.g., frame number 10)
-frame_number = round(1543/2);
+frame_number = round(1543/2)-1;
 % Read the specified frame
 singleFrame = read(videoObj, frame_number);
 % Display the extracted frame
-%imshow(singleFrame);
+imshow(singleFrame);
 
 %converting the image to HSV color space
 hsv_img = rgb2hsv(singleFrame);
 %cropping the image to the region of intrest
-cropped_image = imcrop(hsv_img); 
-imshow(cropped_image)
+%cropped_image = imcrop(hsv_img); 
+%imshow(cropped_image)
 
 [x, y] = getpts;
 
