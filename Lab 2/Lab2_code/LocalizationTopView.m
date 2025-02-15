@@ -26,20 +26,20 @@ hsv_img = rgb2hsv(current_frame); %change input to singleFrame if training
 %imshow(hsv_img)
 
 %Defining the Red Region HSV Range
-r_hue_max = 0.057439;
-r_hue_min = 0.030382;
-r_sat_max = 0.78261;
-r_sat_min = 0.6996;
+r_hue_max = 0.99912;
+r_hue_min = 0;
+r_sat_max = 0.76078;
+r_sat_min = 0.63529;
 r_val_max = 1;
-r_val_min = 0.95294;
+r_val_min = 0.9451;
 
 %Defining the Blue Region HSV Range
-b_hue_max = 0.8333;
-b_hue_min = 0.61639;
+b_hue_max = 0.64039;
+b_hue_min = 0.62368;
 b_sat_max = 1;
-b_sat_min = 0.876;
-b_val_max = 1;
-b_val_min = 0.94902;
+b_sat_min = 0.96667;
+b_val_max = 0.87059;
+b_val_min = 0.73333;
 
 %Creating a red binary mark
 r_mask = (hsv_img(:,:,1)>r_hue_min) & (hsv_img(:,:,1)<r_hue_max) & (hsv_img(:,:,2)>r_sat_min) & (hsv_img(:,:,2)<r_sat_max) &(hsv_img(:,:,3)>r_val_min) & (hsv_img(:,:,3)<r_val_max);
@@ -61,7 +61,7 @@ b_region = regionprops(ccb, 'Area', 'Centroid', 'BoundingBox');
 %bbox = r_region(1).BoundingBox;
 
 %% function outputs
-if isempty(r_region) || isempty(blue_centroid)
+if isempty(r_region) || isempty(b_region)
     % if localization failed, output the following   
     x = 0;
     y = 0;
