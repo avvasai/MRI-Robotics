@@ -3,7 +3,7 @@ function [petri_center,petri_radius] = findPetri(current_frame)
 
     current_frame = imread("snapshot3.png"); %comment this out when you have to run the actual code
     image = current_frame;
-    imshow(image);
+    %imshow(image);
     %To find the pixel length of the petri for claibration
      %d = drawline;
      %pos = d.Position;
@@ -21,7 +21,7 @@ function [petri_center,petri_radius] = findPetri(current_frame)
         %image_white = im2bw(image,level);
     %Alternative method to convert to black and white
     image_white = imbinarize(image,'adaptive');
-    imshow(image_white);
+    %imshow(image_white);
    
 
     %Finding the circle with a radius r pixels("Need to ask regarding which dimensions to use")
