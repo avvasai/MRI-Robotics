@@ -191,6 +191,7 @@ while (~FS.Stop()&&~handles.data.goalReached)
     %experimentdata = [experimentdata; handles.data.last_t coil_currents(1) coil_currents(2) coil_currents(3)...
         %coil_currents(4)];
     experimentdata = [experimentdata; handles.data.last_t, handles.data.curr_x, handles.data.curr_y, handles.data.curr_theta];
+    
     figure(); 
     yyaxis left; 
     t = experimentdata(1); x = experimentdata(2); y = experimentdata(3); theta = experimentdata(4);
