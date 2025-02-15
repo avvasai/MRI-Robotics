@@ -193,6 +193,7 @@ while (~FS.Stop()&&~handles.data.goalReached)
     experimentdata = [experimentdata; handles.data.last_t, handles.data.curr_x, handles.data.curr_y, handles.data.curr_theta];
     figure(); 
     yyaxis left; 
+    t = experimentdata(1); x = experimentdata(2); y = experimentdata(3); theta = experimentdata(4);
     plot(t,x,'b',t,y,'r'); xlabel('Time in seconds'); ylabel('Robot location (x,y) in m'); 
     
     yyaxis right; 
