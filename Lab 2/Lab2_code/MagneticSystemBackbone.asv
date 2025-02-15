@@ -15,7 +15,7 @@ handles.closedWindow = 0;
 
 handles.joy = vrjoystick(1); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % intialize video
-handles.arduino = serialport('COM7', 115200); % initialize arduino communciation
+handles.arduino = serialport('COM3', 115200); % initialize arduino communciation
 
 %% setup camera parameters
 src = getselectedsource(handles.video);
@@ -33,13 +33,13 @@ axes(ax); hold on
 
 % marker for the current location and the target location
 handles.graphics.hMarker = ...
-    scatter(-10, -10, 'filled', 'dy','Parent', ax);
+    scatter(-10, -10, 'filled', 'dm','Parent', ax);
 handles.graphics.gMarker = ...
     scatter(-10, -10, 'p', 'dg','Parent', ax);
 
 % a line representing the orientation of the plot
 handles.graphics.Orientation = ...
-    plot([-10, -10],[-10, -10],'Parent', ax);
+    plot([-10, -10],[-10, -10],'g','Parent', ax);
 handles.data.resolution = [1024 1280];
 
 % initialized variables for legend
@@ -113,7 +113,7 @@ handles.data.sum_err_y = 0;
 handles.data.dt = 0.17;
 
 all_frames = [];
-experimentdata = zeros(1,5); % should be initialized with correct number of elements
+experimentdata = [];%zeros(1,5); % should be initialized with correct number of elements
 
 FS = stoploop({'Stop'});
 
@@ -170,6 +170,7 @@ while (~FS.Stop()&&~handles.data.goalReached)
             disp("Localization not working")
         else
             c = [handles.data.image.curr_x, handles.data.image.curr_y];
+            disp("Localization working, robot center: "+ num2str(c))
             %         plot(c(:,1),c(:,2),'r*')
             handles.graphics.hMarker.XData = handles.data.image.curr_x;
             handles.graphics.hMarker.YData = handles.data.image.curr_y;
@@ -189,8 +190,9 @@ while (~FS.Stop()&&~handles.data.goalReached)
     % robot coordinates to represent the robot location and orientation. 
     %experimentdata = [experimentdata; handles.data.last_t coil_currents(1) coil_currents(2) coil_currents(3)...
         %coil_currents(4)];
-    experimentdata = [experimentdata; handles.data.curr_x handles.data.curr_y coil_currents(2) coil_currents(3)...
-        coil_currents(4)];
+    experimentdata = [experimentdata; handles.data.last_t, handles.data.curr_x, handles.data.curr_y, handles.data.curr_theta];
+
+    
     
     
     
