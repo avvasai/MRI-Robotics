@@ -15,8 +15,8 @@ handles.closedWindow = 0;
 
 handles.joy = vrjoystick(1); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % intialize video
-handles.arduino = serialport('COM3', 115200); % initialize arduino communciation
-
+handles.arduino = serialport('COM4', 115200); % initialize arduino communciation
+i = 0;
 %% setup camera parameters
 src = getselectedsource(handles.video);
 src.AutoExposureLightingMode = 'Backlight';
@@ -27,6 +27,7 @@ fig = figure('NumberTitle', 'off', 'MenuBar', 'none');
 fig.Name = 'My Camera';
 ax = axes(fig);
 current_frame = getsnapshot(handles.video);
+
 im = image(ax, zeros(size(current_frame), 'uint8'));
 axis(ax, 'image');
 axes(ax); hold on
@@ -148,7 +149,7 @@ while (~FS.Stop()&&~handles.data.goalReached)
     if (settings.closedloop_control_on && handles.data.isLocWorking) % close loop control
 
     else % joystick controller on
-        [u] = JoystickActuation(handles.joy)
+        [u] = JoystickActuation(handles.joy);
     end
 
     coil_currents = MapInputtoCoilCurrents(u, settings);  % calculate the coil current command
@@ -190,7 +191,7 @@ while (~FS.Stop()&&~handles.data.goalReached)
     % robot coordinates to represent the robot location and orientation.
     %experimentdata = [experimentdata; handles.data.last_t coil_currents(1) coil_currents(2) coil_currents(3)...
     %coil_currents(4)];
-    experimentdata = [experimentdata; handles.data.last_t, handles.data.curr_x, handles.data.curr_y, handles.data.curr_theta];
+    experimentdata = [experimentdata; handles.data.last_t, handles.data.curr_x, handles.data.curr_y, handles.data.curr_theta,t_processing];
 
     % plot made after the while loop
 
