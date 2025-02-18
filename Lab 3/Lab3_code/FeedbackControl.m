@@ -10,12 +10,29 @@ kp = 0.05*0.1e3;
 ki = 0.005*0.5e3;
 kd = 0.01*0.5e3;
 
-
+% initialize output
+south = 0; west = 0; east = 0; north = 0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 % Use settings.p_control, settings.i_control, settings.d_control in your pid control equation
 % INSERT YOUR CODE HERE
+% define the error
+error_x = settings.data.desired_x - settings.data.curr_x;
+error_y = settings.data.desired_y - settings.data.curr_y;
+
+if error_x > 0 %if we have positive error, pull towards east coil
+    east = kp * error_x;
+else % if the error is negative, pull towards west coil 
+    west = kp * error_x;
+end
+
+if error_y > 0 %if we have positive error, pull towards east coil
+    south = kp * error_y;
+else % if the error is negative, pull towards west coil 
+     = kp * error_y;
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 u = [south west east north];
 
 % adjusting the currents based on the maximum current of power supply
@@ -26,3 +43,6 @@ if curr_sum >MAX_CURR
 end
 
 end
+
+
+%% v
