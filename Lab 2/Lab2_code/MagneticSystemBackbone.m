@@ -15,7 +15,7 @@ handles.closedWindow = 0;
 
 handles.joy = vrjoystick(1); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % intialize video
-handles.arduino = serialport('COM4', 115200); % initialize arduino communciation
+handles.arduino = serialport('COM3', 115200); % initialize arduino communciation
 i = 0;
 %% setup camera parameters
 src = getselectedsource(handles.video);
@@ -77,7 +77,7 @@ plot(handles.data.petri_center(1),handles.data.petri_center(2),'bo','parent',ax)
 % TODO4: find the relationship between the pixel coordinate and robot
 % coordinate, ie find scalar using the petri dish diamter in pixels and in
 % meters
-scalar = 0.085/(handles.petri_radius*2); % m/pixels
+scalar = 0.085/(handles.data.petri_radius*2); % m/pixels
 
 %% initialize control related parameters
 
@@ -140,8 +140,8 @@ while (~FS.Stop()&&~handles.data.goalReached)
 
     % TODO7: uncomment the following lines and convert the image coordinate
     % to the world coordinates. Finish joystick control first
-    handles.data.curr_x = handles.data.image.curr_x*scalar;
-    handles.data.curr_y = handles.data.image.curr_y*scalar;
+    handles.data.curr_x = (handles.data.image.curr_x-handles.data.petri_center(1))*scalar;
+    handles.data.curr_y = (handles.data.image.curr_y-handles.data.petri_center(1))*scalar;
 
     t_processing = toc; % current time
 
