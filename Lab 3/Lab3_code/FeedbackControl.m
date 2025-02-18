@@ -1,4 +1,4 @@
-function [u, data] = FeedbackControl(data,settings)
+function [u, data] = FeedbackControl(data, settings)
 % coil current order SWEN
 
 th = data.curr_theta;
@@ -8,7 +8,7 @@ th = data.curr_theta;
 % effort should be in the form of [south west east north].
 kp = 0.05*0.1e3;
 ki = 0.005*0.5e3;
-kd = 0.01*0.5e3;
+kd = 2*sqrt(kd);%0.01*0.5e3;
 
 % initialize output
 south = 0; west = 0; east = 0; north = 0;
@@ -17,19 +17,19 @@ south = 0; west = 0; east = 0; north = 0;
 % Use settings.p_control, settings.i_control, settings.d_control in your pid control equation
 % INSERT YOUR CODE HERE
 % define the error
-error_x = settings.data.desired_x - settings.data.curr_x;
-error_y = settings.data.desired_y - settings.data.curr_y;
+data.err_xPos = data.desired_x - data.curr_x;
+data.err_yPos = data.desired_y - data.curr_y;
 
-if error_x > 0 %if we have positive error, pull towards east coil
-    east = kp * error_x;
+if data.err_xPos > 0 %if we have positive error, pull towards east coil
+    east = kp * data.err_xPos;
 else % if the error is negative, pull towards west coil 
-    west = kp * error_x;
+    west = kp * data.err_xPos;
 end
 
-if error_y > 0 %if we have positive error, pull towards east coil
-    south = kp * error_y;
-else % if the error is negative, pull towards west coil 
-     = kp * error_y;
+if data.err_yPos > 0 %if we have positive error, pull towards south coil
+    south = kp * data.err_yPos;
+else % if the error is negative, pull towards north coil 
+    north = kp * data.err_yPos;
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
