@@ -1,6 +1,4 @@
 function [x, y, theta,isLocWorking,red_centroid,blue_centroid] = LocalizationTopView(current_frame)
-% TODO: copy and paste your localizationTopView from previous lab
-%Utilizing the sample code for localization
 % Function to localize the magnetic robot
 
 % TODO: The following gives a example to find two a red region and a blue region
@@ -43,20 +41,35 @@ if (length(red_region) >= 1)
     % store all the centroids into handle
     if (numel(red_region) == 0)
         red_centroid = [0 0];
-        %blue_centroid = [0 0];
         
     else
         red_centroid = red_region.Centroid;
-        %blue_centroid = blue_region.Centroid;
     end
+    
     if (numel(blue_region) == 0)
-        %red_centroid = [0 0];
         blue_centroid = [0 0];
         
     else
-        %red_centroid = red_region.Centroid;
         blue_centroid = blue_region.Centroid;
     end
+    
+    center = (red_centroid + blue_centroid)/2;
+    x = center(1);
+    y = center(2);
+    center_dif = red_centroid - center;
+    theta = atan2d(center_dif(2), -center_dif(1));
+    
+    isLocWorking = 1;
+else
+    x = 0;
+    y = 0;
+    theta = 0;
+    disp("Localization Failed")
+    isLocWorking = 0;
+end
+
+
+
 end
 
 
