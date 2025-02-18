@@ -4,7 +4,7 @@ imshow(current_frame);
 [x, y] = getpts();
 
 x = (x - petri_center(1))*scalar;
-y = (y - petri_center(1))*scalar;
+y = (y - petri_center(2))*scalar;
 
 end
 
