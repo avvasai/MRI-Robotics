@@ -26,7 +26,7 @@ axes(ax); hold on
 handles.graphics.hMarker = ...
     scatter(-10, -10, 'filled', 'dy','Parent', ax);
 handles.graphics.gMarker = ...
-    scatter(-10, -10, 'p', 'dr','Parent', ax);
+    scatter(-10, -10, 'p', 'dg','Parent', ax);
 
 % a line representing the orientation of the plot
 handles.graphics.Orientation = ...
@@ -54,7 +54,7 @@ settings.saveon = 0;
 settings.closedloop_control_on = 1;
 settings.image_processing_on = 1;
 % TODO: turn on videoRecording when you want to record the video
-settings.videoRecording_on = 0;
+settings.videoRecording_on = 1;
 
 % TODO: use these settings for different closed-loop controller, ignore
 % dipole model for this lab
@@ -89,7 +89,7 @@ if (settings.image_processing_on)
     % TODO: copy and paste your camera robot calibration here from the
     % previous lab
     handles.data.curr_x = (handles.data.image.curr_x-handles.data.petri_center(1))*scalar;
-    handles.data.curr_y = (handles.data.image.curr_y-handles.data.petri_center(1))*scalar;
+    handles.data.curr_y = (handles.data.image.curr_y-handles.data.petri_center(2))*scalar;
 else
     handles.data.curr_x = 0;
     handles.data.curr_y = 0;
@@ -121,7 +121,7 @@ handles.data.goalReached = 0; % boolean to determine if the target is reached
 % TODO: change target x and y for desired position and convert them into
 % pixel coordinates so that they can be displayed on the image
 handles.data.desired_x = handles.data.curr_x + 0.085/4;
-handles.data.desired_y = handles.data.curr_y + 0.085/4*0;
+handles.data.desired_y = handles.data.curr_y + 0*0.085/4;
 handles.data.desired_theta = 0;
 
 handles.data.image_desired_x = handles.data.desired_x/scalar + handles.data.petri_center(1);
