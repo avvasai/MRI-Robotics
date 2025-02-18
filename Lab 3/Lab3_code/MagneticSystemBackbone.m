@@ -6,7 +6,7 @@ close all
 handles.closedWindow = 0;
 handles.joy = vrjoystick(1); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % intialize video
-handles.arduino = serialport('COM7', 115200);%initialize arduino communciation
+handles.arduino = serialport('COM3', 115200);%initialize arduino communciation
 
 %% setup camera parameters
 src = getselectedsource(handles.video);
@@ -26,7 +26,7 @@ axes(ax); hold on
 handles.graphics.hMarker = ...
     scatter(-10, -10, 'filled', 'dy','Parent', ax);
 handles.graphics.gMarker = ...
-    scatter(-10, -10, 'p', 'dg','Parent', ax);
+    scatter(-10, -10, 'p', 'dr','Parent', ax);
 
 % a line representing the orientation of the plot
 handles.graphics.Orientation = ...
@@ -51,7 +51,7 @@ setappdata(fig, 'cam', handles.video);
 %% system settings
 settings.saveon = 0;
 % TODO: turn on closedloop_control when you want to use PID
-settings.closedloop_control_on =0;
+settings.closedloop_control_on = 1;
 settings.image_processing_on = 1;
 % TODO: turn on videoRecording when you want to record the video
 settings.videoRecording_on = 0;
@@ -59,7 +59,7 @@ settings.videoRecording_on = 0;
 % TODO: use these settings for different closed-loop controller, ignore
 % dipole model for this lab
 % PID settings
-settings.p_control = 0;
+settings.p_control = 1;
 settings.i_control = 0;
 settings.d_control = 0;
 
@@ -107,6 +107,8 @@ handles.data.yVel = 0;  % velocity in y direction
 handles.data.thetaVel = 0;  % angular velocity
 handles.data.prevXpos = 0;  % previous x position 
 handles.data.prevYpos = 0;  % previous y position 
+handles.data.err_xPos = 0; % initialize x position error
+handles.data.err_yPos = 0; % initialize y position error
 handles.data.err_prev_x = 0;% previous position error in x direction 
 handles.data.err_prev_y = 0;% previous position error in y direction 
 handles.data.sum_err_x = 0; % sum of position error in x coordinates 
@@ -118,11 +120,14 @@ handles.data.goalReached = 0; % boolean to determine if the target is reached
 
 % TODO: change target x and y for desired position and convert them into
 % pixel coordinates so that they can be displayed on the image
-handles.data.desired_x = 0e-3;
-handles.data.desired_y = 0e-3;
-handles.data.desired_theta = 0; 
+handles.data.desired_x = handles.data.curr_x + 0.085/4;
+handles.data.desired_y = handles.data.curr_y + 0.085/4*0;
+handles.data.desired_theta = 0;
 
-[handles.data.image_desired_x,handles.data.image_desired_y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
+handles.data.image_desired_x = handles.data.desired_x/scalar + handles.data.petri_center(1);
+handles.data.image_desired_y = handles.data.desired_y/scalar + handles.data.petri_center(2);
+
+%[handles.data.image_desired_x,handles.data.image_desired_y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
 
 
 
@@ -170,13 +175,13 @@ while (~FS.Stop())
        
        % TODO: Uncomment the following if needed
        % determine if the goal is reached with threshold
-       %if((abs(handles.data.desired_x - handles.data.curr_x)<=threshold) && (abs(handles.data.desired_y - handles.data.curr_y)<= threshold)...
-       %        && (abs(handles.data.xVel)<=vel_threshold) && (abs(handles.data.yVel)<=vel_threshold))
-       %    handles.data.goalReached = 1;
-       %    disp('goal reached')
-       %    FS.Stop();
-       %    break;
-       %end 
+       if((abs(handles.data.desired_x - handles.data.curr_x)<=threshold) && (abs(handles.data.desired_y - handles.data.curr_y)<= threshold)...
+              && (abs(handles.data.xVel)<=vel_threshold) && (abs(handles.data.yVel)<=vel_threshold))
+          handles.data.goalReached = 1;
+          disp('goal reached')
+          FS.Stop();
+          break;
+       end 
 
         % store previous position, velocity 
         handles.data.prevXpos = handles.data.curr_x;
