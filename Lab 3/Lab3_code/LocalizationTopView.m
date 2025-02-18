@@ -14,13 +14,14 @@ function [x, y, theta,isLocWorking,red_centroid,blue_centroid] = LocalizationTop
 %   blue_centroid: centroid of blue region
               
 
-red_thr = 0.85; % threshold for red object (0-1)
-red_area_size = 70; % size of the object in pixel
-blue_thr = 0.85; % threshold for blue object (0-1)
-blue_area_size = 70; % size of object in pixel
+red_thr = 0.92; % threshold for red object (0-1)
+red_area_size = 60; % size of the object in pixel
+blue_thr = 0.95; % threshold for blue object (0-1)
+blue_area_size = 60; % size of object in pixel
 
 rgbaq = current_frame; % read image
 rgbaq_normalized = bsxfun(@rdivide,im2double(rgbaq),sqrt(sum((im2double(rgbaq)).^2,3))); % normalize the image
+%figure(); imshow(rgbaq_normalized)
 
 rgbaq_thresholded_red = (rgbaq_normalized(:,:,1)>red_thr).*rgbaq_normalized(:,:,1); % threshold them
 BW2 = bwareaopen(rgbaq_thresholded_red,red_area_size); % reduce into closed area
