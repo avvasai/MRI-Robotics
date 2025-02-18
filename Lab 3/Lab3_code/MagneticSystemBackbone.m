@@ -54,7 +54,7 @@ settings.saveon = 0;
 settings.closedloop_control_on =0;
 settings.image_processing_on = 1;
 % TODO: turn on videoRecording when you want to record the video
-settings.videoRecording_on = 1;
+settings.videoRecording_on = 0;
 
 % TODO: use these settings for different closed-loop controller, ignore
 % dipole model for this lab
@@ -75,7 +75,7 @@ vel_threshold = 0.1e-3; % velocity threshold for determine is the robot is at th
 [handles.data.petri_center,handles.data.petri_radius] = findPetri(current_frame);
 
 % TODO: copy and paste your equation for scalar from the previous lab
-`scalar = ; % m/pixel
+scalar = 0.085/(handles.data.petri_radius*2) ; % m/pixel
 
 %% initialize control related parameters
 
@@ -88,8 +88,8 @@ if (settings.image_processing_on)
     [handles.data.image.curr_x, handles.data.image.curr_y, handles.data.curr_theta,handles.data.isLocWorking,red_centroid,blue_centroid] = LocalizationTopView(current_frame);
     % TODO: copy and paste your camera robot calibration here from the
     % previous lab
-    `handles.data.curr_x = ;
-    `handles.data.curr_y = ;
+    handles.data.curr_x = (handles.data.image.curr_x-handles.data.petri_center(1))*scalar;
+    handles.data.curr_y = (handles.data.image.curr_y-handles.data.petri_center(1))*scalar;
 else
     handles.data.curr_x = 0;
     handles.data.curr_y = 0;
@@ -121,8 +121,9 @@ handles.data.goalReached = 0; % boolean to determine if the target is reached
 handles.data.desired_x = 0e-3;
 handles.data.desired_y = 0e-3;
 handles.data.desired_theta = 0; 
-`handles.data.image_desired_x = ;
-`handles.data.image_desired_y = ;
+
+[handles.data.image_desired_x,handles.data.image_desired_y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
+
 
 
 
@@ -152,12 +153,12 @@ while (~FS.Stop())
     
         % TODO: copy and paste from your previous lab
 
-        `handles.data.curr_x = ;
-        `handles.data.curr_y = ;
+        handles.data.curr_x = (handles.data.image.curr_x - handles.data.petri_center(1))*scalar;
+        handles.data.curr_y = (handles.data.image.curr_y - handles.data.petri_center(2))*scalar;
         t_processing = toc; 
         % TODO: copy and paste from your previous lab
-        `handles.data.xVel = ;
-        `handles.data.yVel = ;
+        handles.data.xVel = 0;
+        handles.data.yVel = 0;
     end
     
     if (settings.closedloop_control_on && handles.data.isLocWorking) % close loop control
@@ -183,7 +184,7 @@ while (~FS.Stop())
         handles.data.prevXvel = handles.data.xVel;
         handles.data.prevYvel = handles.data.yVel;
     else % joystick controller on
-        [u] = JoystickActuation(handles.joy)
+        [u] = JoystickActuation(handles.joy);
     end
     
     

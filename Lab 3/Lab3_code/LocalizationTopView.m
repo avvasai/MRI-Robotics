@@ -43,9 +43,19 @@ if (length(red_region) >= 1)
     % store all the centroids into handle
     if (numel(red_region) == 0)
         red_centroid = [0 0];
+        %blue_centroid = [0 0];
         
     else
         red_centroid = red_region.Centroid;
+        %blue_centroid = blue_region.Centroid;
+    end
+    if (numel(blue_region) == 0)
+        %red_centroid = [0 0];
+        blue_centroid = [0 0];
+        
+    else
+        %red_centroid = red_region.Centroid;
+        blue_centroid = blue_region.Centroid;
     end
 end
 
