@@ -8,7 +8,7 @@ th = data.curr_theta;
 % effort should be in the form of [south west east north].
 kp = 0.05*0.1e3;
 ki = 0.005*0.5e3;
-kd = 2*sqrt(kd);%0.01*0.5e3;
+kd = 2*sqrt(kp);%0.01*0.5e3;
 
 % initialize output
 south = 0; west = 0; east = 0; north = 0;
@@ -27,9 +27,9 @@ else % if the error is negative, pull towards west coil
 end
 
 if data.err_yPos > 0 %if we have positive error, pull towards south coil
-    south = kp * data.err_yPos;
+    south = 0 * kp * data.err_yPos;
 else % if the error is negative, pull towards north coil 
-    north = kp * data.err_yPos;
+    north = 0 * kp * data.err_yPos;
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
