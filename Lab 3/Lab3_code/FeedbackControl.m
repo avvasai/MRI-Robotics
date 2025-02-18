@@ -8,7 +8,7 @@ th = data.curr_theta;
 % effort should be in the form of [south west east north].
 kp = 0.05*0.1e3;
 ki = 0.005*0.5e3;
-kd = 2*sqrt(kp);%0.01*0.5e3;
+kd = 2*sqrt(kp); % (mass spring damper critical - good starting point) %0.01*0.5e3;
 
 % initialize output
 south = 0; west = 0; east = 0; north = 0;
@@ -20,16 +20,30 @@ south = 0; west = 0; east = 0; north = 0;
 data.err_xPos = data.desired_x - data.curr_x;
 data.err_yPos = data.desired_y - data.curr_y;
 
+%derivative
+err_x_dot = (data.err_xPos - data.err_prev_x)/data.dt;
+err_y_dot = (data.err_yPos - data.err_prev_y)/data.dt;
+
+% integral -> sum defined & updated in MagneticSystemBackbone.m while loop
+
+
+% total control law
+PID_x = [settings.p_control; settings.i_control; settings.d_control]*...
+        [kp*data.err_xPos, ki*data.sum_err_x, kd*err_x_dot];
+
+PID_y = [settings.p_control; settings.i_control; settings.d_control]*...
+        [kp*data.err_yPos, ki*data.sum_err_y, kd*err_y_dot];
+
 if data.err_xPos > 0 %if we have positive error, pull towards east coil
-    east = kp * data.err_xPos;
+    east = PID_x;
 else % if the error is negative, pull towards west coil 
-    west = kp * data.err_xPos;
+    west = PID_x;
 end
 
 if data.err_yPos > 0 %if we have positive error, pull towards south coil
-    south = 0 * kp * data.err_yPos;
+    south =  PID_y;
 else % if the error is negative, pull towards north coil 
-    north = 0 * kp * data.err_yPos;
+    north = PID_y;
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
