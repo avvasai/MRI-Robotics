@@ -1,5 +1,6 @@
 function [x,y] = desiredpoints(current_frame,petri_center,scalar)
 %Script to define the desired point in the image
+figure();
 imshow(current_frame);
 [x, y] = getpts();
 
