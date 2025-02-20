@@ -28,11 +28,11 @@ err_y_dot = (data.err_yPos - data.err_prev_y)/data.dt;
 
 
 % total control law
-PID_x = [settings.p_control; settings.i_control; settings.d_control]*...
-        [kp*data.err_xPos, ki*data.sum_err_x, kd*err_x_dot];
+PID_x = [settings.p_control settings.i_control settings.d_control]*...
+        [kp*data.err_xPos; ki*data.sum_err_x; kd*err_x_dot];
 
-PID_y = [settings.p_control; settings.i_control; settings.d_control]*...
-        [kp*data.err_yPos, ki*data.sum_err_y, kd*err_y_dot];
+PID_y = [settings.p_control settings.i_control settings.d_control]*...
+        [kp*data.err_yPos; ki*data.sum_err_y; kd*err_y_dot];
 
 if data.err_xPos > 0 %if we have positive error, pull towards east coil
     east = PID_x;
@@ -41,9 +41,9 @@ else % if the error is negative, pull towards west coil
 end
 
 if data.err_yPos > 0 %if we have positive error, pull towards south coil
-    south =  PID_y;
+    south =  0;
 else % if the error is negative, pull towards north coil 
-    north = PID_y;
+    north = 0;
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
