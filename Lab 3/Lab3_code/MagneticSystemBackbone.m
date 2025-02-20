@@ -120,14 +120,14 @@ handles.data.goalReached = 0; % boolean to determine if the target is reached
 
 % TODO: change target x and y for desired position and convert them into
 % pixel coordinates so that they can be displayed on the image
-handles.data.desired_x = handles.data.curr_x + 0.085/4;
-handles.data.desired_y = handles.data.curr_y + 0*0.085/4;
+%handles.data.desired_x = handles.data.curr_x + 0.085/4;
+%handles.data.desired_y = handles.data.curr_y + 0*0.085/4;
 handles.data.desired_theta = 0;
+
+[handles.data.desired_x,handles.data.desired_y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
 
 handles.data.image_desired_x = handles.data.desired_x/scalar + handles.data.petri_center(1);
 handles.data.image_desired_y = handles.data.desired_y/scalar + handles.data.petri_center(2);
-
-%[handles.data.image_desired_x,handles.data.image_desired_y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
 
 
 
