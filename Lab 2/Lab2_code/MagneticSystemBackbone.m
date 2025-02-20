@@ -6,8 +6,7 @@ close all
 % Pixel coordinates is in pixels, robot coordinates is in meters
 % x coordinate of a image is horizontal, increasing from left to right
 % y coordinate of a image is vertical, increasing from top to bottom
-% handles.data.image.curr_x is x coordinate in pixel coordinate
-% handles.data.curr_x is x coordinate in robot coordinate
+% handles.data.image.curr_x is x coordinate in pixel coordinateCOM
 %***************************************************
 
 %% hardware setups
@@ -15,7 +14,7 @@ handles.closedWindow = 0;
 
 handles.joy = vrjoystick(1); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % intialize video
-handles.arduino = serialport('COM3', 115200); % initialize arduino communciation
+handles.arduino = serialport('COM4', 115200); % initialize arduino communciation
 i = 0;
 %% setup camera parameters
 src = getselectedsource(handles.video);
@@ -89,8 +88,8 @@ if (settings.localization_on)
     [handles.data.image.curr_x, handles.data.image.curr_y, handles.data.curr_theta,handles.data.isLocWorking,red_centroid,blue_centroid] = LocalizationTopView(current_frame);
     % TODO6: convert the image coordinate to the world coordinates (center
     % of the petri dish will be the origin, downwards is positive y and rightward is positive x)
-    handles.data.curr_x = handles.data.image.curr_x*scalar;
-    handles.data.curr_y = handles.data.image.curr_y*scalar;
+    handles.data.curr_x = (handles.data.image.curr_x-handles.data.petri_center(1))*scalar;
+    handles.data.curr_y = (handles.data.image.curr_y-handles.data.petri_center(2))*scalar;
 else
     handles.data.curr_x = 0;
     handles.data.curr_y = 0;
@@ -171,7 +170,7 @@ while (~FS.Stop()&&~handles.data.goalReached)
             disp("Localization not working")
         else
             c = [handles.data.image.curr_x, handles.data.image.curr_y];
-            disp("Localization working, robot center: "+ num2str(c))
+            %disp("Localization working, robot center: "+ num2str(c))
             %         plot(c(:,1),c(:,2),'r*')
             handles.graphics.hMarker.XData = handles.data.image.curr_x;
             handles.graphics.hMarker.YData = handles.data.image.curr_y;

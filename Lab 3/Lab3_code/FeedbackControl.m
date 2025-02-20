@@ -1,7 +1,7 @@
 function [u, data] = FeedbackControl(data, settings)
 % coil current order SWEN
 
-th = data.curr_theta;
+%th = data.curr_theta;
 % TODO: create your PID controller here, the input is data and settings and
 % the output should be u (the control efforts) and data. You should update
 % all the values in data class (position, error, etc.) and your contorl
@@ -21,11 +21,14 @@ data.err_xPos = data.desired_x - data.curr_x;
 data.err_yPos = data.desired_y - data.curr_y;
 
 %derivative
-data.xVel = (data.curr_x - data.prevXpos)/data.dt;
-data.yVel = (data.curr_y - data.prevXpos)/data.dt;
+% data.xVel = (data.curr_x - data.prevXpos)/data.dt;
+% data.yVel = (data.curr_y - data.prevXpos)/data.dt;
+% 
+% x_error_dot = data.xVel - data.prevXvel;
+% y_error_dot = data.yVel - data.prevYvel;
 
-x_error_dot = data.xVel - data.prevXvel;
-y_error_dot = data.yVel - data.prevYvel;
+x_error_dot = 0;
+y_error_dot = 0;
 
 % integral -> sum defined & updated in MagneticSystemBackbone.m while loop
 
@@ -37,20 +40,47 @@ PID_x = [settings.p_control settings.i_control settings.d_control]*...
 PID_y = [settings.p_control settings.i_control settings.d_control]*...
         [kp*data.err_yPos; ki*data.sum_err_y; kd*y_error_dot];
 
-if data.err_xPos > 0 %if we have positive error, pull towards east coil
-    east = PID_x;
-else % if the error is negative, pull towards west coil 
+%Activation of Coils based on condition
+ r_origin_x = data.curr_x
+ r_origin_y = data.curr_y
+ d_conv_x = data.desired_x - r_origin_x
+ d_conv_y = data.desired_y - r_origin_y
+ d_quad = quad(d_conv_x,d_conv_y)
+ r_quad = quad(data.curr_x,data.curr_y)
+
+if d_quad == 2 || d_quad == 3
     west = PID_x;
+elseif d_quad == 1 || d_quad == 4
+    east = PID_x;
+else
+    east = 0;
+    west = 0;
 end
 
-if data.err_yPos > 0 %if we have positive error, pull towards south coil
-    south =  PID_y;
-else % if the error is negative, pull towards north coil 
+if d_quad == 2 || d_quad == 1
     north = PID_y;
+elseif d_quad == 1 || d_quad == 3
+    south = PID_y;
+else
+    south = 0;
+    north = 0;
 end
+
+
+% if data.err_xPos > 0 %if we have positive error, pull towards east coil
+%     east = PID_x;
+% else % if the error is negative, pull towards west coil 
+%     west = PID_x;
+% end
+% 
+% if data.err_yPos > 0 %if we have positive error, pull towards south coil
+%     south =  PID_y;
+% else % if the error is negative, pull towards north coil 
+%     north = PID_y;
+% end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-u = [south west east north];
+u = [south west east north]
 
 % adjusting the currents based on the maximum current of power supply
 MAX_CURR = 0.3;
@@ -62,4 +92,18 @@ end
 end
 
 
-%% v
+%% Helper Function
+
+function val = quad(x,y)
+    if x >=0 && y>0
+        val = 4; 
+    elseif x <=0 && y>0
+        val = 3;%disp('Quadrant II') 
+    elseif x <=0 && y<0
+        val = 2;%disp('Quadrant III') 
+    elseif x >=0 && y<0
+        val = 1;%disp('Quadrant IV') 
+    else 
+        val = 0;
+    end
+end

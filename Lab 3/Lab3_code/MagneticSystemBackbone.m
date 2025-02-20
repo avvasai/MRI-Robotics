@@ -6,7 +6,7 @@ close all
 handles.closedWindow = 0;
 handles.joy = vrjoystick(1); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % intialize video
-handles.arduino = serialport('COM3', 115200);%initialize arduino communciation
+handles.arduino = serialport('COM4', 115200);%initialize arduino communciation
 
 %% setup camera parameters
 src = getselectedsource(handles.video);
@@ -125,9 +125,11 @@ handles.data.goalReached = 0; % boolean to determine if the target is reached
 handles.data.desired_theta = 0;
 
 [handles.data.desired_x,handles.data.desired_y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
+%handles.data.desired_x =  0;
+%handles.data.desired_y =  0;
 
-handles.data.image_desired_x = handles.data.desired_x/scalar + handles.data.petri_center(1);
-handles.data.image_desired_y = handles.data.desired_y/scalar + handles.data.petri_center(2);
+handles.data.image_desired_x = handles.data.desired_x/scalar + handles.data.petri_center(1)/scalar;
+handles.data.image_desired_y = handles.data.desired_y/scalar + handles.data.petri_center(2)/scalar;
 
 
 
