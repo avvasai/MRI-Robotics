@@ -9,7 +9,7 @@ if (settings.closedloop_control_on)
     north = u(4); 
     % TODO: this should be either positive or negative depending on how you
     % define error, you should experiment yourself. 
-    current = '(+ or -)' [south, west, east, north];
+    current = [south, west, east, north];
 else % Joystick control on
     lh = u(1); % left horizontal joystick 
     lv = u(2); % left vertical joystick 

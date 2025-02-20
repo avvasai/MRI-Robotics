@@ -1,6 +1,4 @@
 function [x, y, theta,isLocWorking,red_centroid,blue_centroid] = LocalizationTopView(current_frame)
-% TODO: copy and paste your localizationTopView from previous lab
-%Utilizing the sample code for localization
 % Function to localize the magnetic robot
 
 % TODO: The following gives a example to find two a red region and a blue region
@@ -16,13 +14,14 @@ function [x, y, theta,isLocWorking,red_centroid,blue_centroid] = LocalizationTop
 %   blue_centroid: centroid of blue region
               
 
-red_thr = 0.85; % threshold for red object (0-1)
-red_area_size = 70; % size of the object in pixel
-blue_thr = 0.85; % threshold for blue object (0-1)
-blue_area_size = 70; % size of object in pixel
+red_thr = 0.92; % threshold for red object (0-1)
+red_area_size = 60; % size of the object in pixel
+blue_thr = 0.95; % threshold for blue object (0-1)
+blue_area_size = 60; % size of object in pixel
 
 rgbaq = current_frame; % read image
 rgbaq_normalized = bsxfun(@rdivide,im2double(rgbaq),sqrt(sum((im2double(rgbaq)).^2,3))); % normalize the image
+%figure(); imshow(rgbaq_normalized)
 
 rgbaq_thresholded_red = (rgbaq_normalized(:,:,1)>red_thr).*rgbaq_normalized(:,:,1); % threshold them
 BW2 = bwareaopen(rgbaq_thresholded_red,red_area_size); % reduce into closed area
@@ -43,20 +42,35 @@ if (length(red_region) >= 1)
     % store all the centroids into handle
     if (numel(red_region) == 0)
         red_centroid = [0 0];
-        %blue_centroid = [0 0];
         
     else
         red_centroid = red_region.Centroid;
-        %blue_centroid = blue_region.Centroid;
     end
+    
     if (numel(blue_region) == 0)
-        %red_centroid = [0 0];
         blue_centroid = [0 0];
         
     else
-        %red_centroid = red_region.Centroid;
         blue_centroid = blue_region.Centroid;
     end
+    
+    center = (red_centroid + blue_centroid)/2;
+    x = center(1);
+    y = center(2);
+    center_dif = red_centroid - center;
+    theta = atan2d(center_dif(2), -center_dif(1));
+    
+    isLocWorking = 1;
+else
+    x = 0;
+    y = 0;
+    theta = 0;
+    disp("Localization Failed")
+    isLocWorking = 0;
+end
+
+
+
 end
 
 
