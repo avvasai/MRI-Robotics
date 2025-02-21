@@ -21,21 +21,18 @@ data.err_xPos = data.desired_x - data.curr_x;
 data.err_yPos = data.desired_y - data.curr_y;
 
 %derivative
-data.xVel = (data.curr_x - data.prevXpos)/data.dt;
-data.yVel = (data.curr_y - data.prevXpos)/data.dt;
-
-x_error_dot = data.xVel - data.prevXvel;
-y_error_dot = data.yVel - data.prevYvel;
+err_x_dot = (data.err_xPos - data.err_prev_x)/data.dt;
+err_y_dot = (data.err_yPos - data.err_prev_y)/data.dt;
 
 % integral -> sum defined & updated in MagneticSystemBackbone.m while loop
 
 
 % total control law
 PID_x = [settings.p_control settings.i_control settings.d_control]*...
-        [kp*data.err_xPos; ki*data.sum_err_x; kd*x_error_dot];
+        [kp*data.err_xPos; ki*data.sum_err_x; kd*err_x_dot];
 
 PID_y = [settings.p_control settings.i_control settings.d_control]*...
-        [kp*data.err_yPos; ki*data.sum_err_y; kd*y_error_dot];
+        [kp*data.err_yPos; ki*data.sum_err_y; kd*err_y_dot];
 
 if data.err_xPos > 0 %if we have positive error, pull towards east coil
     east = PID_x;
