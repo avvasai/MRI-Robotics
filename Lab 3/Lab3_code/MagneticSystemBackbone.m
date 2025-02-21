@@ -280,6 +280,66 @@ clear handles.video
 clear handles.arduino
 close all
 
+%% plot experiment data after the while loop
+
+% main plot - show x and y at same time
+figure();
+t = experimentdata(:,1); 
+x = experimentdata(:,2); 
+y = experimentdata(:,3);
+plot(t,x,'b',t,y,'r'); 
+xlabel('Time in seconds'); 
+ylabel('Robot location (x,y) in m');
+
+legend('x','y'); 
+title('Robot coordinates vs time');
+
+%% subplots
+% seperate x and y into subplots at show steady-state error, settling time, and percent overshoot
+
+figure(2);
+
+% extract desired here
+x_des = data.desired_x;
+y_des = data.desired_y;
+
+% use same error definition as in feedback control
+data.err_xPos = data.desired_x - data.curr_x;
+data.err_yPos = data.desired_y - data.curr_y;
+
+% settling time for x and y
+settling_threshold = 0.01; % this we can change, I am just choosing 1% threshold for no reason
+time_x = find(abs(x - x(end)) <= settling_threshold * abs(x(end)), 1,'first');
+time_y = find(abs(y - y(end)) <= settling_threshold * abs(y(end)), 1, 'first');
+% percent overshoot for these two guys
+percent_over_x = ((max(x) - x(end)) / x(end)) * 100;
+percent_over_y = ((max(y) - y(end)) / y(end)) * 100;
+
+% subplot for x
+subplot(2,1,1); 
+plot(t, x, 'b');
+xlabel('Time (s)');
+ylabel('Robot x (m)');
+title('Robot x vs time');
+plot([time_x, time_x], [min(y), max(x)], 'r--'); % plot line for settling time
+plot([min(t), max(t)], [e_x, e_x], 'b--'); % plot line for steady-state error
+text(0.1, max(x) - 0.2, sprintf('%.2f s', time_x), 'Color', 'black');
+text(0.1, max(x) - 0.4, sprintf('Percent overshoot = %.2f%%', percent_over_x), 'Color', 'black');
+
+
+% subplot for y
+subplot(2,1,2); 
+plot(t, y, 'r');
+xlabel('Time (s)');
+ylabel('Robot y (m)');
+title('Robot y vs time');
+plot([time_y, time_y], [min(y), max(x)], 'r--'); % plot line for settling time
+plot([min(t), max(t)], [e_y, e_y], 'b--'); % plot line for steady-state error
+text(0.1, max(x) - 0.2, sprintf('%.2f s', time_x), 'Color', 'black');
+text(0.1, max(x) - 0.4, sprintf('Percent overshoot = %.2f%%', percent_over_x), 'Color', 'black');
+
+
+
 
 
 
