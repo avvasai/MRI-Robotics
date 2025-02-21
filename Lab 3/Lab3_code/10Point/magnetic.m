@@ -1,4 +1,4 @@
-function [handles,expiremntaldata] = magnetic(com)
+function [handles,experimentdata] = magnetic(com,x,y,i)
 clc
 clear all
 close all
@@ -125,9 +125,9 @@ handles.data.goalReached = 0; % boolean to determine if the target is reached
 %handles.data.desired_y = handles.data.curr_y + 0*0.085/4;
 handles.data.desired_theta = 0;
 
-[handles.data.desired_x,handles.data.desired_y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
-%handles.data.desired_x =  0;
-%handles.data.desired_y =  0;
+%[handles.data.desired_x,handles.data.desired_y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
+handles.data.desired_x =  x;
+handles.data.desired_y =  y;
 
 handles.data.image_desired_x = handles.data.desired_x/scalar + handles.data.petri_center(1)/scalar;
 handles.data.image_desired_y = handles.data.desired_y/scalar + handles.data.petri_center(2)/scalar;
@@ -147,7 +147,7 @@ FS = stoploop({'Stop'});
 % create video object if video recording is on
 if (settings.videoRecording_on)
     % setup video recording
-    v = VideoWriter('Camera.avi');
+    v = VideoWriter(num2str(i));
     open(v);
 end
 

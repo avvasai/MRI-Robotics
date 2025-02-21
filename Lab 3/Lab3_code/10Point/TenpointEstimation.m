@@ -60,14 +60,26 @@ scalar = 0.085/(handle.data.petri_radius*2) ; % m/pixel
 % Define circle parameters
 centerX = origin(1);
 centerY = origin(2);
-radius = radius/2;
+radius = radius/2*scalar;
 numPoints = 10; 
 % Generate angles around the circle
 theta = linspace(0, 2*pi, numPoints);
 % Calculate x and y coordinates 
 x = radius * cos(theta) + centerX;
 y = radius * sin(theta) + centerY;
+%converting the x and y values to those of robot coordinate to find into
+%magnetic function
+x = (x - centerX(1))*scalar;
+y = (y - centerY(2))*scalar;
 %% Close the video to find the center points
 stoppreview(handle.video)
 clear handle.video
 close all
+%% Running the while loop
+handles = zeros(numPoints);
+experimentdata_main = zeros(numPoints);
+
+for i = 1:numPoints
+[handles(i),experimentdata_main(i)] = magnetic('COM4',x(i),y(i),i);
+[~,~] = magnetic('COM4',origin(1),origin(2));
+end
