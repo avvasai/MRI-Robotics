@@ -1,13 +1,13 @@
-function [handles,experimentdata] = magnetic(com,x,y,i)
-clc
-clear all
-close all
+function [handles,experimentdata] = magnetic(x,y,i)
+% clc
+% clear all
+% close all
 
 %% hardware setups
 handles.closedWindow = 0;
 handles.joy = vrjoystick(1); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % intialize video
-handles.arduino = serialport(com, 115200);%initialize arduino communciation
+handles.arduino = serialport('COM4', 115200);%initialize arduino communciation
 
 %% setup camera parameters
 src = getselectedsource(handles.video);
@@ -276,6 +276,8 @@ if (settings.saveon)
     save('actuation_signals.mat', 'experimentdata') %this is coil signals and other necessary data
     save('image_frames.mat', 'all_frames') % this is image frames 2D
 end
+%Save the workspace
+save(num2str(i),'handles.data.curr_x','handles.data.curr_y');
 
 %clear up variables
 stoppreview(handles.video)

@@ -36,12 +36,12 @@ PID_y = [settings.p_control settings.i_control settings.d_control]*...
         [kp*data.err_yPos; ki*data.sum_err_y; kd*y_error_dot];
 
 %Activation of Coils based on condition
- r_origin_x = data.curr_x
- r_origin_y = data.curr_y
- d_conv_x = data.desired_x - r_origin_x
- d_conv_y = data.desired_y - r_origin_y
- d_quad = quad(d_conv_x,d_conv_y)
- r_quad = quad(data.curr_x,data.curr_y)
+ r_origin_x = data.curr_x;
+ r_origin_y = data.curr_y;
+ d_conv_x = data.desired_x - r_origin_x;
+ d_conv_y = data.desired_y - r_origin_y;
+ d_quad = quad(d_conv_x,d_conv_y);
+ r_quad = quad(data.curr_x,data.curr_y);
 
 if d_quad == 2 || d_quad == 3
     west = PID_x;
@@ -63,7 +63,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-u = [south west east north]
+u = [south west east north];
 
 % adjusting the currents based on the maximum current of power supply
 MAX_CURR = 0.3;

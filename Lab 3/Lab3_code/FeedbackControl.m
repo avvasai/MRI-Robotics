@@ -6,7 +6,7 @@ function [u, data] = FeedbackControl(data, settings)
 % the output should be u (the control efforts) and data. You should update
 % all the values in data class (position, error, etc.) and your contorl
 % effort should be in the form of [south west east north].
-kp = 0.7*0.1e3;
+kp = 0.6*0.1e3;
 ki = 0.002*0.5e3;
 kd = 0.15*sqrt(kp); % (mass spring damper critical - good starting point) %0.01*0.5e3;
 

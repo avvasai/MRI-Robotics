@@ -7,7 +7,7 @@ close all
 handle.closedWindow = 0;
 handle.joy = vrjoystick(1); % initialize joystick
 handle.video = videoinput('gentl', 1, 'BGR8'); % intialize video
-handle.arduino = serialport('COM4', 115200);%initialize arduino communciation
+%handle.arduino = serialport('COM4', 115200);%initialize arduino communciation
 
 %% setup camera parameters
 src = getselectedsource(handle.video);
@@ -54,13 +54,14 @@ setappdata(fig, 'cam', handle.video);
 [origin,radius] = findPetri(current_frame);
 
 % TODO: copy and paste your equation for scalar from the previous lab
-scalar = 0.085/(handle.data.petri_radius*2) ; % m/pixel
+scalar = 0.085/(radius*2) ; % m/pixel
 
 %% Finding all the coordinates for a circle with given radius
 % Define circle parameters
-centerX = origin(1);
-centerY = origin(2);
-radius = radius/2*scalar;
+centerX = 0;
+centerY = 0;
+[desiredradX,desiredradY] = desiredpoints(current_frame,origin,scalar);
+radius = sqrt(((desiredradX)^2)+((desiredradY)^2));
 numPoints = 10; 
 % Generate angles around the circle
 theta = linspace(0, 2*pi, numPoints);
@@ -69,17 +70,30 @@ x = radius * cos(theta) + centerX;
 y = radius * sin(theta) + centerY;
 %converting the x and y values to those of robot coordinate to find into
 %magnetic function
-x = (x - centerX(1))*scalar;
-y = (y - centerY(2))*scalar;
-%% Close the video to find the center points
+%x = (x - centerX)*scalar;
+%y = (y - centerY)*scalar;
+% %% Close the video to find the center points
 stoppreview(handle.video)
 clear handle.video
 close all
-%% Running the while loop
-handles = zeros(numPoints);
-experimentdata_main = zeros(numPoints);
 
+% plot(x, y, 'r'); 
+% 
+% axis equal; % Ensure aspect ratio is correct for a circular appearance
+% 
+% grid on;
+% hold on;
+% plot((centerX-centerX),(centerY-centerY),'o')
+
+% 
+% %% Running the while loop
+%handles = [];
+%experimentdata_main = [];
+% plot((centerX-centerX),(centerY-centerY),'ro')
 for i = 1:numPoints
-[handles(i),experimentdata_main(i)] = magnetic('COM4',x(i),y(i),i);
-[~,~] = magnetic('COM4',origin(1),origin(2));
+    [~,~] = magnetic(0,0,0);
+    [~,~] = magnetic(x(i),y(i),i);
+    [~,~] = magnetic(0,0,0);
 end
+save('main',"x","y","radius","desiredradX","desiredradY")
+close all
