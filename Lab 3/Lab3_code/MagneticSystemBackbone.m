@@ -60,8 +60,8 @@ settings.videoRecording_on = 1;
 % dipole model for this lab
 % PID settings
 settings.p_control = 1;
-settings.i_control = 0;
-settings.d_control = 0;
+settings.i_control = 1;
+settings.d_control = 1;
 
 settings.dipole_model = 0;
 
