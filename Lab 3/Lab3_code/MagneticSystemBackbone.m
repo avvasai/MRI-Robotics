@@ -281,8 +281,6 @@ clear handles.arduino
 close all
 
 %% plot experiment data after the while loop
-
-% main plot - show x and y at same time
 figure();
 t = experimentdata(:,1); 
 x = experimentdata(:,2); 
@@ -295,51 +293,44 @@ legend('x','y');
 title('Robot coordinates vs time');
 
 %% subplots
-% seperate x and y into subplots at show steady-state error, settling time, and percent overshoot
 
 figure(2);
 
-% extract desired here
-x_des = data.desired_x;
-y_des = data.desired_y;
+% ss error for x and y
+sse_x = (-0.0156- 0.232);
+sse_y = (-0.0204-0);
 
-% use same error definition as in feedback control
-data.err_xPos = data.desired_x - data.curr_x;
-data.err_yPos = data.desired_y - data.curr_y;
+%percent overshoot in x and y
+Y_max_x = 0.243;
+Y_final_x = 0.231;
+PO_x = ((Y_max_x - Y_final_x) / Y_final_x) * 100;  % Percent overshoot formula
+Y_max_y = -0.059;
+Y_final_y = 0.0204;
+PO_y = ((Y_max_y - Y_final_y) / Y_final_y) * 100;  % Percent overshoot formula
 
-% settling time for x and y
-settling_threshold = 0.01; % this we can change, I am just choosing 1% threshold for no reason
-time_x = find(abs(x - x(end)) <= settling_threshold * abs(x(end)), 1,'first');
-time_y = find(abs(y - y(end)) <= settling_threshold * abs(y(end)), 1, 'first');
-% percent overshoot for these two guys
-percent_over_x = ((max(x) - x(end)) / x(end)) * 100;
-percent_over_y = ((max(y) - y(end)) / y(end)) * 100;
 
 % subplot for x
 subplot(2,1,1); 
 plot(t, x, 'b');
 xlabel('Time (s)');
 ylabel('Robot x (m)');
+xline(2.47, 'r', 'LineWidth', 2);
+text(2.8, max(x), 'Settling Time', 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'center', 'FontSize', 10, 'Color', 'r');
+text(0.8, max(x) - 0.1, ['Percent Overshoot: ', num2str(PO_x, '%.2f'), '%'], ...
+    'FontSize', 12, 'Color', 'g', 'HorizontalAlignment', 'center');
+text(0.8, max(x) - 0.2, ['Steady-State Error: ', num2str(sse_x, '%.4f')], ...
+    'FontSize', 12, 'Color', 'm', 'HorizontalAlignment', 'center'); % Adding SSE for x
 title('Robot x vs time');
-plot([time_x, time_x], [min(y), max(x)], 'r--'); % plot line for settling time
-plot([min(t), max(t)], [e_x, e_x], 'b--'); % plot line for steady-state error
-text(0.1, max(x) - 0.2, sprintf('%.2f s', time_x), 'Color', 'black');
-text(0.1, max(x) - 0.4, sprintf('Percent overshoot = %.2f%%', percent_over_x), 'Color', 'black');
-
 
 % subplot for y
 subplot(2,1,2); 
 plot(t, y, 'r');
 xlabel('Time (s)');
 ylabel('Robot y (m)');
+xline(2.13, 'r', 'LineWidth', 2);
+text(2.8, max(y), 'Settling Time', 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'center', 'FontSize', 10, 'Color', 'r');
+text(0.75, - 0.03, ['Percent Overshoot: ', num2str(-389.216, '%.2f'), '%'], ...
+    'FontSize', 12, 'Color', 'b', 'HorizontalAlignment', 'center');
+text(0.75, -0.05, ['Steady-State Error: ', num2str(sse_y, '%.4f')], ...
+    'FontSize', 12, 'Color', 'k', 'HorizontalAlignment', 'center'); % Adding SSE for x
 title('Robot y vs time');
-plot([time_y, time_y], [min(y), max(x)], 'r--'); % plot line for settling time
-plot([min(t), max(t)], [e_y, e_y], 'b--'); % plot line for steady-state error
-text(0.1, max(x) - 0.2, sprintf('%.2f s', time_x), 'Color', 'black');
-text(0.1, max(x) - 0.4, sprintf('Percent overshoot = %.2f%%', percent_over_x), 'Color', 'black');
-
-
-
-
-
-
