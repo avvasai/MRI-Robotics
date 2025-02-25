@@ -33,7 +33,7 @@ handles.joy = vrjoystick(1); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % intialize video
 
 %TODO4: Check COM port
-handles.arduino = serialport('COM7', 115200);%initialize arduino communciation
+handles.arduino = serialport('COM3', 115200);%initialize arduino communciation
 
 %% Defining magnetic component of the magnet
 % TODO5: change the dimensions with repect to your robot
