@@ -6,7 +6,7 @@ close all
 handles.closedWindow = 0;
 handles.joy = vrjoystick(1); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % intialize video
-handles.arduino = serialport('COM3', 115200);%initialize arduino communciation
+handles.arduino = serialport('COM4', 115200);%initialize arduino communciation
 
 %% setup camera parameters
 src = getselectedsource(handles.video);
@@ -60,8 +60,8 @@ settings.videoRecording_on = 1;
 % dipole model for this lab
 % PID settings
 settings.p_control = 1;
-settings.i_control = 0;
-settings.d_control = 0;
+settings.i_control = 1;
+settings.d_control = 1;
 
 settings.dipole_model = 0;
 
@@ -125,9 +125,11 @@ handles.data.goalReached = 0; % boolean to determine if the target is reached
 handles.data.desired_theta = 0;
 
 [handles.data.desired_x,handles.data.desired_y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
+%handles.data.desired_x =  0;
+%handles.data.desired_y =  0;
 
-handles.data.image_desired_x = handles.data.desired_x/scalar + handles.data.petri_center(1);
-handles.data.image_desired_y = handles.data.desired_y/scalar + handles.data.petri_center(2);
+handles.data.image_desired_x = handles.data.desired_x/scalar + handles.data.petri_center(1)/scalar;
+handles.data.image_desired_y = handles.data.desired_y/scalar + handles.data.petri_center(2)/scalar;
 
 
 
@@ -258,6 +260,56 @@ while (~FS.Stop())
 
 
 end
+%% plot experiment data after the while loop
+% main plot - show x and y at same time
+f2 = figure();
+t = experimentdata(:,1); 
+x = experimentdata(:,2); 
+y = experimentdata(:,3);
+plot(t,x,'b',t,y,'r'); 
+xlabel('Time in seconds'); 
+ylabel('Robot location (x,y) in m');
+legend('x','y'); 
+title('Robot coordinates vs time');
+%% subplots
+% seperate x and y into subplots at show steady-state error, settling time, and percent overshoot
+% extract desired here
+x_des = handles.data.desired_x;
+y_des = handles.data.desired_y;
+% use same error definition as in feedback control
+data.err_xPos = handles.data.desired_x - handles.data.curr_x;
+data.err_yPos = handles.data.desired_y - handles.data.curr_y;
+% settling time for x and y
+settling_threshold = 0.05; % this we can change, I am just choosing 1% threshold for no reason
+time_x = find(abs(x - x(end)) <= settling_threshold * abs(x(end)), 1,'first');
+time_y = find(abs(y - y(end)) <= settling_threshold * abs(y(end)), 1, 'first');
+% percent overshoot for these two guys
+percent_over_x = ((max(x) - x(end)) / x(end)) * 100;
+percent_over_y = ((max(y) - y(end)) / y(end)) * 100;
+% subplot for x
+f3 = figure();
+subplot(2,1,1); 
+plot(t, x, 'b');
+xlabel('Time (s)');
+ylabel('Robot x (m)');
+title('Robot x vs time');
+plot([time_x, time_x], [min(y), max(x)], 'r--'); % plot line for settling time
+plot([min(t), max(t)], [data.err_xPos, data.err_xPos], 'b--'); % plot line for steady-state error
+text(0.1, max(x) - 0.2, sprintf('%.2f s', time_x), 'Color', 'black');
+text(0.1, max(x) - 0.4, sprintf('Percent overshoot = %.2f%%', percent_over_x), 'Color', 'black');
+% subplot for y
+subplot(2,1,2); 
+plot(t, y, 'r');
+xlabel('Time (s)');
+ylabel('Robot y (m)');
+title('Robot y vs time');
+plot([time_y, time_y], [min(y), max(x)], 'r--'); % plot line for settling time
+plot([min(t), max(t)], [data.err_yPos, data.err_yPos], 'b--'); % plot line for steady-state error
+text(0.1, max(x) - 0.2, sprintf('%.2f s', time_x), 'Color', 'black');
+text(0.1, max(x) - 0.4, sprintf('Percent overshoot = %.2f%%', percent_over_x), 'Color', 'black');
+saveas(f2,'fullplot.png')
+saveas(f3,'subplot.png')
+
 if (settings.videoRecording_on)
     close(v);
 end
