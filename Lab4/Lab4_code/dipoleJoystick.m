@@ -64,7 +64,7 @@ else
     %Finish computing coil currents as shown in Class lectures
 
     % TODO4: Uncomment and Define Coil Currents here
-    u = [;
+    u = ;
 
 end
 
