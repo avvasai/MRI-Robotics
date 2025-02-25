@@ -36,7 +36,7 @@ else
 
     % TODO2: for each coil calculate the unit magnetic field (B_tilde) and
     % force (F_tilde)
-    
+
 
     for i=1:4
 
@@ -50,26 +50,26 @@ else
 
     end
     C = [B_tilde;F_tilde];
-    % TODO3:  Uncomment lines and define desired heading and force  
-    
-alpha = 0.5;
+    % TODO3:  Uncomment lines and define desired heading and force
 
-      h_des_x = (u(1,3))*alpha; % Desired Orientation from joystick 
-      h_des_y = (u(1,4))*alpha;
-      h_des = [h_des_x; h_des_y];
-     % 
-      F_des_x = u(1,1); % define desired F from joystick
-      F_des_y = u(1,2);
-      F_des = [F_des_x; F_des_y];
-    
-      M1 = [h_des;F_des];
-      %Finish computing coil currents as shown in Class lectures
+    alpha = 0.5;
+    u1 = [lh lv rh rv];
+    h_des_x = (u1(1,3))*alpha; % Desired Orientation from joystick
+    h_des_y = (u1(1,4))*alpha;
+    h_des = [h_des_x; h_des_y];
+    %
+    F_des_x = u1(1,1); % define desired F from joystick
+    F_des_y = u1(1,2);
+    F_des = [F_des_x; F_des_y];
 
-% TODO4: Uncomment and Define Coil Currents here
+    M1 = [h_des;F_des];
+    %Finish computing coil currents as shown in Class lectures
+
+    % TODO4: Uncomment and Define Coil Currents here
     u = inv(C)*M1;
     %reduce current to 20%
     %u = 0.2*u;
-    
+
 end
 
 % adjusting the currents based on the maximum current of power supply
