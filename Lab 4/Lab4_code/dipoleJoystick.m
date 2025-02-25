@@ -32,6 +32,7 @@ else
 
     m = data.m_magnet/mu0;
     h = [cos(handles.theta); sin(handles.theta)]; h_hat = h/norm(h); % CHECK THETA
+    m = m*h_hat;
 
     % TODO2: for each coil calculate the unit magnetic field (B_tilde) and
     % force (F_tilde)
@@ -48,23 +49,26 @@ else
             -(5*dot(m_c_tilde(:,i),r_hat(:,i))*dot(m,r_hat(:,i))*(r_hat(:,i))));
 
     end
-    
+    C = [B_tilde;F_tilde];
     % TODO3:  Uncomment lines and define desired heading and force  
     
 alpha = 0.5;
 
-      h_des_x = (u(1,3))/alpha; % Desired Orientation from joystick 
-      h_des_y = (u(1,4))/alpha;
+      h_des_x = (u(1,3))*alpha; % Desired Orientation from joystick 
+      h_des_y = (u(1,4))*alpha;
       h_des = [h_des_x; h_des_y];
      % 
       F_des_x = u(1,1); % define desired F from joystick
       F_des_y = u(1,2);
       F_des = [F_des_x; F_des_y];
-
+    
+      M1 = [h_des;F_des];
       %Finish computing coil currents as shown in Class lectures
 
 % TODO4: Uncomment and Define Coil Currents here
-    %u = ;
+    u = inv(C)*M1;
+    %reduce current to 20%
+    %u = 0.2*u;
     
 end
 

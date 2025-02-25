@@ -88,7 +88,7 @@ setappdata(fig, 'cam', handles.video);
 [handles.data.petri_center,handles.data.petri_radius] = findPetri(current_frame);
 
 % TODO6: Uncomment the following line and then copy and paste your equation for scalar from the previous lab
-% scalar = ;
+scalar = 0.085/(handles.data.petri_radius*2) ;
 
 
 %% initialize control related parameters
