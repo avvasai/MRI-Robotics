@@ -30,10 +30,10 @@ y_error_dot = data.err_yPos/data.dt;
 
 % total control law
 PID_x = [settings.p_control settings.i_control settings.d_control]*...
-        [kp*data.err_xPos; ki*data.sum_err_x; kd*x_error_dot];
+        [kp*data.err_xPos; ki*data.sum_err_x; kd*err_x_dot];
 
 PID_y = [settings.p_control settings.i_control settings.d_control]*...
-        [kp*data.err_yPos; ki*data.sum_err_y; kd*y_error_dot];
+        [kp*data.err_yPos; ki*data.sum_err_y; kd*err_y_dot];
 
 %Activation of Coils based on condition
  r_origin_x = data.curr_x
