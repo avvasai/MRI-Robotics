@@ -39,13 +39,15 @@ else
     
     % TODO3:  Uncomment lines and define desired heading and force  
     
-%     h_des_x =; % Desired Orientation from joystick 
-%     h_des_y =;
-%     h_des = ;
-      
-%     F_des_x = ; % define desired F from joystick
-%     F_des_y = ;
-%     F_des = ;
+alpha = 0.5;
+
+      h_des_x = (u(1,1))/alpha; % Desired Orientation from joystick 
+      h_des_y = (u(1,2))/alpha;
+      h_des = [h_des_x; h_des_y];
+     % 
+      F_des_x = u(1,3); % define desired F from joystick
+      F_des_y = u(1,4);
+      F_des = [F_des_x; F_des_y];
 
       %Finish computing coil currents as shown in Class lectures
 
