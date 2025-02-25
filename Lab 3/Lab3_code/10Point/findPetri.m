@@ -1,6 +1,6 @@
 function [petri_center,petri_radius] = findPetri(current_frame)
 % Function used to locate the petri dish
-
+    
     image = current_frame; 
     % TODO: use im2bw to threshold the image and convert it to binary image
     % you wll use the circle with maximum radius as the petri dish

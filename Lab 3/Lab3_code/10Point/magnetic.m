@@ -182,6 +182,8 @@ while (~FS.Stop())
                 && (abs(handles.data.xVel)<=vel_threshold) && (abs(handles.data.yVel)<=vel_threshold))
             handles.data.goalReached = 1;
             disp('goal reached')
+            %Save the workspace
+            save(num2str(i));
             FS.Stop();
             break;
         end
@@ -276,8 +278,7 @@ if (settings.saveon)
     save('actuation_signals.mat', 'experimentdata') %this is coil signals and other necessary data
     save('image_frames.mat', 'all_frames') % this is image frames 2D
 end
-%Save the workspace
-save(num2str(i),'handles.data.curr_x','handles.data.curr_y');
+
 
 %clear up variables
 stoppreview(handles.video)
