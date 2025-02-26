@@ -87,8 +87,11 @@ setappdata(fig, 'cam', handles.video);
 %locate the petri dish and make the center as 0
 [handles.data.petri_center,handles.data.petri_radius] = findPetri(current_frame);
 
+% filter everything outside petri
+current_frame = filterOutsideCircle(current_frame, handles.data.petri_center(1), handles.data.petri_center(2), handles.data.petri_radius);
+
 % TODO6: Uncomment the following line and then copy and paste your equation for scalar from the previous lab
-% scalar = ;
+scalar = 0.085/(handles.data.petri_radius*2) ; % m/pixel
 
 
 %% initialize control related parameters
@@ -136,18 +139,19 @@ handles.data.image_desired_y = handles.data.desired_y / scalar + handles.data.pe
 % define trajectory
 % TODO8: Use the following cases to test your dipole model. You can change the shapes or add new shapes here
 shape = 1; % 1: diamond, 2: circle
+
 switch shape
     case 1 % diamond
         diamondsize = 8e-3;
         handles.data.trajectory = [diamondsize        0    -diamondsize     0        diamondsize;...
             0       -diamondsize         0       diamondsize        0;...
-            -pi/4 -     3*pi/4      -pi/4  -3*pi/4      -pi/4];
+            -pi/4      -3*pi/4      -pi/4  -3*pi/4      -pi/4];
         
     case 2 % circle
         r = 10e-3;
         handles.data.trajectory = [r r*cosd(30) r*cosd(60) 0 r*cosd(120) r*cosd(150) r*cosd(180) r*cosd(150) r*cosd(120) 0 r*cosd(60) r*cosd(30) r;...
             0 -r*sind(30) -r*sind(60) -r -r*sind(120) -r*sind(150) -r*sind(180) r*sind(150) r*sind(120) r r*sind(60) r*sind(30) 0;...
-            -pi/3 -2*pi/3 -5*pi/6 5*pi/6 5*pi/6 2*pi/3 pi/3 pi/3 pi/6 0 -pi/6 -pi/3 -2pi/3 ];
+            -pi/3 -2*pi/3 -5*pi/6 5*pi/6 5*pi/6 2*pi/3 pi/3 pi/3 pi/6 0 -pi/6 -pi/3 -2*pi/3 ];
            
 end
 

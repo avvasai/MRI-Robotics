@@ -13,7 +13,7 @@ rv = (abs(rv)>0.02)*rv;
 % eliminate when there is very small readings from the joystick
 
 if lh == 0 && lv ==0 && rh==0 && rv==0
-    u = [0 0 0 0];
+    u = [0 0 0 0]
 else
     % TODO1: develop your dipole model here. You must define any constants
     % and/or other values your think must be used in the dipole model in
@@ -53,14 +53,15 @@ else
     % TODO3:  Uncomment lines and define desired heading and force
 
     alpha = 0.5;
-    u1 = [lh lv rh rv];
+    u1 = [lh lv rh rv]
+
     h_des_x = (u1(1,3))*alpha; % Desired Orientation from joystick
     h_des_y = (u1(1,4))*alpha;
     h_des = [h_des_x; h_des_y];
     %
     F_des_x = u1(1,1); % define desired F from joystick
     F_des_y = u1(1,2);
-    F_des = [F_des_x; F_des_y];
+    F_des = [F_des_x; F_des_y]
 
     M1 = [h_des;F_des];
     %Finish computing coil currents as shown in Class lectures
