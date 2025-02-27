@@ -192,8 +192,8 @@ while (~FS.Stop())
         handles.data.prevYvel = handles.data.yVel;
 
         % sum error for integral (I) control
-        handles.data.sum_err_x = handles.data.sum_err_x + handles.data.err_xPos;
-        handles.data.sum_err_y = handles.data.sum_err_y + handles.data.err_yPos;
+        handles.data.sum_err_x = handles.data.sum_err_x + handles.data.err_xPos*handles.data.dt;
+        handles.data.sum_err_y = handles.data.sum_err_y + handles.data.err_yPos*handles.data.dt;
 
     else % joystick controller on
         [u] = JoystickActuation(handles.joy);

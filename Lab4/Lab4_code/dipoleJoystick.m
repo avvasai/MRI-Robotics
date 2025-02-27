@@ -30,7 +30,7 @@ else
 
     m_c_tilde = N*coil_area*1*n_hat; % unit magnetic moment matrix
 
-    h = [cos(data.curr_theta); sin(data.curr_theta)]; h_hat = h/norm(h); % CHECK THETA
+    h = [cos(data.curr_theta); -sin(data.curr_theta)]; h_hat = h/norm(h); % CHECK THETA
     m = (data.m_magnet)*h_hat;
 
     % TODO2: for each coil calculate the unit magnetic field (B_tilde) and
@@ -43,7 +43,7 @@ else
         B_tilde(:,i) = (mu0/(4*pi*(norm(r(:,i))^3)))*(3*dot(m_c_tilde(:,i), r_hat(:,i))*r_hat(:,i)-m_c_tilde(:,i));
 
         % unit magnetic force
-        h = [cos(data.curr_theta); sin(data.curr_theta)]; h_hat = h/norm(h); % CHECK THETA
+        h = [cos(data.curr_theta); -sin(data.curr_theta)]; h_hat = h/norm(h); % CHECK THETA
         m = (data.m_magnet)*h_hat; % putting this here in case there is some inertia affecting theta
 
         F_tilde(:,i) = ((3*mu0)/(4*pi*(norm(r(:,i))^4)))*...
@@ -81,7 +81,7 @@ else
 end
 
 % adjusting the currents based on the maximum current of power supply
-MAX_CURR = 1;
+MAX_CURR = 0.3;
 curr_sum = sum(abs(u));
 if curr_sum >MAX_CURR
     u = u/curr_sum*MAX_CURR;

@@ -13,7 +13,7 @@ kd = 0.15*sqrt(kp); % (mass spring damper critical - good starting point) %0.01*
 % initialize output
 south = 0; west = 0; east = 0; north = 0;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 % Use settings.p_control, settings.i_control, settings.d_control in your pid control equation
 % INSERT YOUR CODE HERE
 % define the error
@@ -21,27 +21,27 @@ data.err_xPos = data.desired_x - data.curr_x;
 data.err_yPos = data.desired_y - data.curr_y;
 
 %derivative
-err_x_dot = (data.err_xPos-data.err_prev_x)/data.dt;
-err_y_dot = (data.err_yPos-data.err_prev_y)/data.dt;
+x_error_dot = data.err_xPos/data.dt;
+y_error_dot = data.err_yPos/data.dt;
 
-% sum error for integral (I) control
-data.sum_err_x = data.sum_err_x + data.err_xPos*data.dt;
-data.sum_err_y = data.sum_err_y + data.err_yPos*data.dt;
+
+% integral -> sum defined & updated in MagneticSystemBackbone.m while loop
+
 
 % total control law
 PID_x = [settings.p_control settings.i_control settings.d_control]*...
-    [kp*data.err_xPos; ki*data.sum_err_x; kd*err_x_dot];
+        [kp*data.err_xPos; ki*data.sum_err_x; kd*err_x_dot];
 
 PID_y = [settings.p_control settings.i_control settings.d_control]*...
-    [kp*data.err_yPos; ki*data.sum_err_y; kd*err_y_dot];
+        [kp*data.err_yPos; ki*data.sum_err_y; kd*err_y_dot];
 
 %Activation of Coils based on condition
-r_origin_x = data.curr_x
-r_origin_y = data.curr_y
-d_conv_x = data.desired_x - r_origin_x
-d_conv_y = data.desired_y - r_origin_y
-d_quad = quad(d_conv_x,d_conv_y)
-r_quad = quad(data.curr_x,data.curr_y)
+ r_origin_x = data.curr_x
+ r_origin_y = data.curr_y
+ d_conv_x = data.desired_x - r_origin_x
+ d_conv_y = data.desired_y - r_origin_y
+ d_quad = quad(d_conv_x,d_conv_y)
+ r_quad = quad(data.curr_x,data.curr_y)
 
 if d_quad == 2 || d_quad == 3
     west = PID_x;
@@ -78,15 +78,15 @@ end
 %% Helper Function
 
 function val = quad(x,y)
-if x >=0 && y>0
-    val = 4;
-elseif x <=0 && y>0
-    val = 3;%disp('Quadrant II')
-elseif x <=0 && y<0
-    val = 2;%disp('Quadrant III')
-elseif x >=0 && y<0
-    val = 1;%disp('Quadrant IV')
-else
-    val = 0;
-end
+    if x >=0 && y>0
+        val = 4; 
+    elseif x <=0 && y>0
+        val = 3;%disp('Quadrant II') 
+    elseif x <=0 && y<0
+        val = 2;%disp('Quadrant III') 
+    elseif x >=0 && y<0
+        val = 1;%disp('Quadrant IV') 
+    else 
+        val = 0;
+    end
 end
