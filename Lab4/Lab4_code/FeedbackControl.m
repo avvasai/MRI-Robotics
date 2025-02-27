@@ -2,7 +2,6 @@ function [u, data] = FeedbackControl(data,settings)
 % here the control algorithm (dipole model)
 % coil current order LTRD
 
-theta = data.desired_theta;
 %TODO1: copy and paste your calculation for pid from the previous lab. This
 %refers to your force calculation from PID. You may have to tune the PID
 %gains again.
@@ -23,7 +22,6 @@ h = [cos(data.curr_theta); sin(data.curr_theta)]; h_hat = h/norm(h); % CHECK THE
 m = (data.m_magnet)*h_hat;
 
 
-
 if(settings.dipole_model) % dipole model with position and orientation control
     % TODO3: Implement your dipole model here. You may use the same logic
     % as "dipoleJoystick.m". You can copy and paste your dipole model from dipoleJoystick.m and
@@ -32,11 +30,8 @@ if(settings.dipole_model) % dipole model with position and orientation control
     for i=1:4
         % unit magnetic field
         B_tilde(:,i) = (mu0/(4*pi*(norm(r(:,i))^3)))*(3*dot(m_c_tilde(:,i), r_hat(:,i))*r_hat(:,i)-m_c_tilde(:,i));
-
-        % unit magnetic force
-        h = [cos(data.curr_theta); sin(data.curr_theta)]; h_hat = h/norm(h); % CHECK THETA
-        m = (data.m_magnet)*h_hat; % putting this here in case there is some inertia affecting theta
-
+        
+        %unit magnetic force
         F_tilde(:,i) = ((3*mu0)/(4*pi*(norm(r(:,i))^4)))*...
             (((dot(m_c_tilde(:,i),r_hat(:,i)))*m)...
             + (dot(m,r_hat(:,i))*m_c_tilde(:,i))...
@@ -70,7 +65,7 @@ else % pid controller without dipole model
     % TODO4: copy and paste your 'pid only' (P, PI, PD or PID whichever
     % worked best for you in the previous lab) control effort here
 
-    [PID_x, PID_y] = controlEffort(data);
+    [PID_x, PID_y] = controlEffort(data, settings);
 
     if data.err_xPos > 0 %if we have positive error, pull towards east coil
         east = PID_x;
@@ -100,6 +95,9 @@ end
 
 %% control law helper function
 function [PID_x, PID_y] = controlEffort(data, settings)
+kp = 0.6*0.1e3;
+ki = 0.002*0.5e3;
+kd = 0.15*sqrt(kp); % (mass spring damper critical - good starting point) %0.01*0.5e3;
 
 % define the error
 data.err_xPos = data.desired_x - data.curr_x;
