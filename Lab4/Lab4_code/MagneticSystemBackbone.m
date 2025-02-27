@@ -24,8 +24,8 @@ settings.trajectory_following_on = 0;
 % set threshold to determine if the robot is at desired location
 % TODO3: change threshold to make trajecotry work. Find the minimum
 % threshold. The threshold value must be given in meters
-threshold = 0; % position threshold for determine is the robot is at the target location
-vel_threshold = 0; % velocity threshold for determine is the robot is at the target location
+threshold = 2e-3; % position threshold for determine is the robot is at the target location
+vel_threshold = 0.1e-3; % velocity threshold for determine is the robot is at the target location
 
 %% hardware setups
 handles.closedWindow = 0;
