@@ -59,20 +59,3 @@ if curr_sum >MAX_CURR
 end
 
 end
-
-
-%% Helper Function
-
-function val = quad(x,y)
-if x >=0 && y>0
-    val = 4;
-elseif x <=0 && y>0
-    val = 3;%disp('Quadrant II')
-elseif x <=0 && y<0
-    val = 2;%disp('Quadrant III')
-elseif x >=0 && y<0
-    val = 1;%disp('Quadrant IV')
-else
-    val = 0;
-end
-end
