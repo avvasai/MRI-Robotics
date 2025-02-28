@@ -100,7 +100,7 @@ scalar = 0.085/(handles.data.petri_radius*2) ; % m/pixel
 handles.data.isLocWorking = 1;
 % TODO7: initialize prev_t for the first derivative iteration calculation:
 % define prev_t as the negative of your averaged delta_t. Calculating
-% delta_t again might be worthwhile. 
+% delta_t again might be worthwhile.
 handles.data.prev_t= -0.1;
 if (settings.image_processing_on)
     [handles.data.image.curr_x, handles.data.image.curr_y, handles.data.curr_theta,handles.data.isLocWorking,red_centroid,blue_centroid] = LocalizationTopView(current_frame);
@@ -146,13 +146,13 @@ switch shape
         handles.data.trajectory = [diamondsize        0    -diamondsize     0        diamondsize;...
             0       -diamondsize         0       diamondsize        0;...
             -pi/4      -3*pi/4      -pi/4  -3*pi/4      -pi/4];
-        
+
     case 2 % circle
         r = 10e-3;
         handles.data.trajectory = [r r*cosd(30) r*cosd(60) 0 r*cosd(120) r*cosd(150) r*cosd(180) r*cosd(150) r*cosd(120) 0 r*cosd(60) r*cosd(30) r;...
             0 -r*sind(30) -r*sind(60) -r -r*sind(120) -r*sind(150) -r*sind(180) r*sind(150) r*sind(120) r r*sind(60) r*sind(30) 0;...
             -pi/3 -2*pi/3 -5*pi/6 5*pi/6 5*pi/6 2*pi/3 pi/3 pi/3 pi/6 0 -pi/6 -pi/3 -2*pi/3 ];
-           
+
 end
 
 all_frames = [];
@@ -182,23 +182,26 @@ while (~FS.Stop())
         handles.data.desired_y = handles.data.trajectory(2,ctr);
         handles.data.desired_theta= handles.data.trajectory(3,ctr);
     end
-    
+
     current_frame = getimage(im);
+
     if (settings.image_processing_on)
+        % filter everything outside petri
+        current_frame = filterOutsideCircle(current_frame, handles.data.petri_center(1), handles.data.petri_center(2), handles.data.petri_radius);
         [handles.data.image.curr_x, handles.data.image.curr_y, handles.data.curr_theta,handles.data.isLocWorking,red_centroid,blue_centroid] = LocalizationTopView(current_frame);
-        
-        
+
+
         handles.data.curr_x = scalar*(handles.data.image.curr_x - handles.data.petri_center(1));
         handles.data.curr_y = scalar*(handles.data.image.curr_y - handles.data.petri_center(2));
         t_processing = toc;
-        
+
         handles.data.xVel = (handles.data.curr_x - handles.data.prevXpos)/(t_processing - handles.data.last_t);
         handles.data.yVel = (handles.data.curr_y - handles.data.prevYpos)/(t_processing - handles.data.last_t);
     end
-    
+
     if (settings.closedloop_control_on && handles.data.isLocWorking) % close loop control
         if(~handles.data.goalReached)
-            
+
             if settings.dipole_joysitck
                 % TODO10: modify your dipoleJoystick function to test using
                 % joystick with dipole model
@@ -210,7 +213,7 @@ while (~FS.Stop())
                 [u, handles.data] = FeedbackControl(handles.data,settings);
             end
         end
-        
+
         if((abs(handles.data.desired_x - handles.data.curr_x)<=threshold) && (abs(handles.data.desired_y - handles.data.curr_y)<= threshold)...
                 && (abs(handles.data.xVel)<=vel_threshold) && (abs(handles.data.yVel)<=vel_threshold))
             if(ctr == trajectory_size)
@@ -226,7 +229,7 @@ while (~FS.Stop())
             handles.data.sum_err_y = 0; % sum of position error in y coordinates
             ctr = ctr + 1;
         end
-        
+
         % store previous position, velocity
         handles.data.prevXpos = handles.data.curr_x;
         handles.data.prevYpos = handles.data.curr_y;
@@ -235,10 +238,10 @@ while (~FS.Stop())
     else % joystick controller on
         [u] = JoystickActuation(handles.joy);
     end
-    
+
     coil_currents = MapInputtoCoilCurrents(u, settings);  % calculate the coil current command
     ArduinoCommunication(coil_currents, handles.arduino); % send coil current command to arduino
-    
+
     if(settings.image_processing_on)
         %         handles.data.desired_theta = (0.01*2*pi*handles.data.last_t);
         %         handles.data.desired_theta
@@ -248,15 +251,15 @@ while (~FS.Stop())
         handles.data.image_desired_y = handles.data.desired_y / scalar + handles.data.petri_center(2);
         handles.graphics.gMarker.XData = handles.data.image_desired_x;
         handles.graphics.gMarker.YData = handles.data.image_desired_y;
-        
+
         handles.graphics.Orientation.XData = [red_centroid(:,1),blue_centroid(:,1)];
         handles.graphics.Orientation.YData = [red_centroid(:,2),blue_centroid(:,2)];
-        
+
         handles.data.frameRateCam = 1/handles.data.dt;
         handles.graphics.framerate.String = ['Frame Rate ', num2str(handles.data.frameRateCam)];
         handles.graphics.Xgradient.String = ['X ', num2str(handles.data.curr_x*1000)];
         handles.graphics.Ygradient.String = ['Y ', num2str(handles.data.curr_y*1000)];
-        
+
         if(~handles.data.isLocWorking)
             disp("Localization not working")
         else
@@ -264,24 +267,24 @@ while (~FS.Stop())
             handles.graphics.hMarker.XData = handles.data.image.curr_x;
             handles.graphics.hMarker.YData = handles.data.image.curr_y;
         end
-        
+
     end
-    
-    
-    
+
+
+
     % for data saving
     handles.data.prev_t = handles.data.last_t;
     handles.data.last_t = toc;
     handles.data.dt = handles.data.last_t - handles.data.prev_t;
-    
-    
+
+
     experimentdata = [experimentdata; handles.data.last_t coil_currents(1) coil_currents(2) coil_currents(3)...
         coil_currents(4) handles.data.curr_x handles.data.curr_y handles.data.curr_theta];
     if(settings.closedloop_control_on && ~settings.dipole_joysitck)
         handles.data.err_prev_x = handles.data.err_xPos;
         handles.data.err_prev_y = handles.data.err_yPos;
     end
-    
+
     % get the current frame with the markers
     frame = getframe(ax);
     if (settings.videoRecording_on)
@@ -294,8 +297,8 @@ while (~FS.Stop())
     %     else
     %         all_frames(:,:,:, end+1) = frame;
     %     end
-    
-    
+
+
 end
 if (settings.videoRecording_on)
     close(v);

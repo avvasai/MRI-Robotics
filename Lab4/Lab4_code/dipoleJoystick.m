@@ -53,7 +53,7 @@ else
     
     % TODO3:  Uncomment lines and define desired heading and force
 
-    alpha = 0.25; %0-20
+    alpha = 1.5e-5; %0-20
 
     h_des_x = rh; % Desired Orientation from joystick
     h_des_y = rv;
@@ -62,7 +62,7 @@ else
     %
     F_des_x = lh; % define desired F from joystick
     F_des_y = lv;
-    F_des = [F_des_x; F_des_y]; 
+    F_des = [F_des_x; F_des_y] 
 
     %tuning
     %F_des = [0;0];
@@ -72,7 +72,7 @@ else
     %Finish computing coil currents as shown in Class lectures
 
     % TODO4: Uncomment and Define Coil Currents here
-    u = inv(C)*M1;
+    u = inv(C)*M1
 
 end
 
