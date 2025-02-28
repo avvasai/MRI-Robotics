@@ -43,9 +43,6 @@ else
         B_tilde(:,i) = (mu0/(4*pi*(norm(r(:,i))^3)))*(3*dot(m_c_tilde(:,i), r_hat(:,i))*r_hat(:,i)-m_c_tilde(:,i));
 
         % unit magnetic force
-        h = [cos(data.curr_theta); sin(data.curr_theta)]; h_hat = h/norm(h); % CHECK THETA
-        m = (data.m_magnet)*h_hat; % putting this here in case there is some inertia affecting theta
-
         F_tilde(:,i) = ((3*mu0)/(4*pi*(norm(r(:,i))^4)))*...
             (((dot(m_c_tilde(:,i),r_hat(:,i)))*m)...
             + (dot(m,r_hat(:,i))*m_c_tilde(:,i))...
@@ -53,9 +50,10 @@ else
             - (5*dot(m_c_tilde(:,i),r_hat(:,i))*dot(m,r_hat(:,i))*(r_hat(:,i))));
     end
     C = [B_tilde;F_tilde];
+    
     % TODO3:  Uncomment lines and define desired heading and force
 
-    alpha = 0.25; %0-20
+    alpha = 1.5e-5; %0-20
 
     h_des_x = rh; % Desired Orientation from joystick
     h_des_y = rv;
@@ -64,19 +62,17 @@ else
     %
     F_des_x = lh; % define desired F from joystick
     F_des_y = lv;
-    F_des = [F_des_x; F_des_y]; 
+    F_des = [F_des_x; F_des_y] 
 
     %tuning
     %F_des = [0;0];
 
     M1 = [h_des;F_des];
+
     %Finish computing coil currents as shown in Class lectures
 
     % TODO4: Uncomment and Define Coil Currents here
-    u = inv(C)*M1;
-    %u = diag([1 2 2 1])*u;
-    %reduce current to 20%
-    %u = 0.2*u;
+    u = inv(C)*M1
 
 end
 

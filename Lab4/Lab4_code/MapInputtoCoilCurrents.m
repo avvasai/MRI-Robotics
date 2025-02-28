@@ -26,9 +26,9 @@ else % Joystick control on
     
 
     south_c = max(0.0, lv)*scale;
-    north_c = max(0.0, -lv) *scale;
+    north_c = min(0.0, -lv) *scale;
     east_c = max(0.0, lh) *scale;
-    west_c = max(0.0, -lh)  *scale;
+    west_c = min(0.0, -lh)  *scale;
     current = [south_c, west_c, east_c, north_c];
 end
     % current projection
