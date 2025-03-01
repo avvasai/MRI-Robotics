@@ -26,7 +26,7 @@ else
     r1 = [0; 0.08]; r2 = [-0.08; 0]; r3 = [0.08;0]; r4 = [0;-0.08]; %coil positions
     r = -[r1,r2,r3,r4]+[data.curr_x; data.curr_y];
     r_hat = [r1/norm(r1),r2/norm(r2),r3/norm(r3),r4/norm(r4)]; % unit pos vec matrix
-    n_hat = [[0;1], [-1;0], [1;0], [0;-1]]; % coil orientations
+    n_hat = -1*[[0;1], [-1;0], [1;0], [0;-1]]; % coil orientations
 
     m_c_tilde = N*coil_area*1*n_hat; % unit magnetic moment matrix
 
@@ -54,7 +54,7 @@ else
     
     % TODO3:  Uncomment lines and define desired heading and force
 
-    alpha = 3e-5; % 0-20
+    alpha = 2.5e-5; % 0-20
 
     h_des_x = rh; % Desired Orientation from joystick
     h_des_y = rv;
@@ -74,7 +74,8 @@ else
     %Finish computing coil currents as shown in Class lectures
 
     % TODO4: Uncomment and Define Coil Currents here
-    u = inv(C)*M1
+    I = inv(C)*M1;
+    u = [I(1); I(2); I(3); I(4)]
 
 end
 

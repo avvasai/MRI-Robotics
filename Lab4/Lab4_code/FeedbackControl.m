@@ -14,7 +14,7 @@ coil_area = pi*35e-3*35e-3;
 r1 = [0; 0.08]; r2 = [-0.08; 0]; r3 = [0.08;0]; r4 = [0;-0.08]; % coil positions
 r = -[r1,r2,r3,r4]+[data.curr_x; data.curr_y];
 r_hat = [r1/norm(r1),r2/norm(r2),r3/norm(r3),r4/norm(r4)]; % unit pos vec matrix
-n_hat = [[0;1], [-1;0], [1;0], [0;-1]]; % coil orientations
+n_hat = 1*[[0;1], [-1;0], [1;0], [0;-1]]; % coil orientations
 
 m_c_tilde = N*coil_area*1*n_hat; % unit magnetic moment matrix
 
@@ -43,7 +43,7 @@ if(settings.dipole_model) % dipole model with position and orientation control
     C = [B_tilde;F_tilde];
     
     % desired heading - open loop
-    alpha = 1.85e-8; % 0-20
+    alpha = 2.5e-7; % 0-20
     %{
     [lh, lv, rh, rv] = joystickOutput(data);
     h_des_x = rh; % Desired Orientation from joystick
@@ -57,6 +57,7 @@ if(settings.dipole_model) % dipole model with position and orientation control
     [PID_x, PID_y] = controlEffort(data, settings);
     F_des_x = PID_x;
     F_des_y = PID_y;
+    b=5;
     F_des = [F_des_x; F_des_y]
 
     M1 = [h_des;F_des];
@@ -99,7 +100,7 @@ end
 
 %% control law helper function
 function [PID_x, PID_y] = controlEffort(data, settings)
-kp = 11.3e-5;
+kp = 1e-4;
 ki = 1.5e-5;
 kd = 7e-4*sqrt(kp); % (mass spring damper critical - good starting point) %0.01*0.5e3;
 
