@@ -26,20 +26,21 @@
 % %imshow(hsv_img)
 % 
 % %Defining the Red Region HSV Range
-% r_hue_max = 0.921;
-% r_hue_min = 0.092;
-% r_sat_min = 0.684;
-% r_sat_max = 1;
-% r_val_min = 0.934;
+% r_hue_max = 0.99449;
+% r_hue_min = 0.02521;
+% r_sat_max = 0.6494;
+% r_sat_min = 0.46667;
 % r_val_max = 1;
+% r_val_min = 0.96863;
+% 
 % 
 % %Defining the Blue Region HSV Range
-% b_hue_max = 0.757;
-% b_hue_min = 0.0586;
-% b_sat_max = 1;
-% b_sat_min = 0.661;
+% b_hue_max = 0.62408;
+% b_hue_min = 0.57047;
+% b_sat_max = 0.98824;
+% b_sat_min = 0.58431;
 % b_val_max = 1;
-% b_val_min = 0.833;
+% b_val_min = 0.77255;
 % 
 % %Creating a red binary mark
 % r_mask = (hsv_img(:,:,1)>r_hue_min) & (hsv_img(:,:,1)<r_hue_max) & (hsv_img(:,:,2)>r_sat_min) & (hsv_img(:,:,2)<r_sat_max) &(hsv_img(:,:,3)>r_val_min) & (hsv_img(:,:,3)<r_val_max);
@@ -160,9 +161,9 @@ function [x, y, theta,isLocWorking,red_centroid,blue_centroid] = LocalizationTop
 %   blue_centroid: centroid of blue region
 
 
-red_thr = 0.86; % threshold for red object (0-1)
+red_thr = 0.75; % threshold for red object (0-1)
 red_area_size = 70; % size of the object in pixel
-blue_thr = 0.95; % threshold for blue object (0-1)
+blue_thr = 0.90; % threshold for blue object (0-1)
 blue_area_size = 70; % size of object in pixel
 
 rgbaq = current_frame; % read image

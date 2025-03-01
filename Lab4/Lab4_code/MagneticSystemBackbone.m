@@ -15,17 +15,17 @@ settings.i_control = 1;
 settings.d_control = 1;
 
 % TODO1: change settings based on the problem you are working on
-settings.dipole_joysitck = 1;
-settings.dipole_model = 0;
+settings.dipole_joysitck = 0;
+settings.dipole_model = 1;
 
 % TODO2: change this to 1 when you want to follow trajectory
-settings.trajectory_following_on = 0;
+settings.trajectory_following_on = 1;
 
 % set threshold to determine if the robot is at desired location
 % TODO3: change threshold to make trajecotry work. Find the minimum
 % threshold. The threshold value must be given in meters
-threshold = 2e-3; % position threshold for determine is the robot is at the target location
-vel_threshold = 0.1e-3; % velocity threshold for determine is the robot is at the target location
+threshold = 4e-3; %2e-3 % position threshold for determine is the robot is at the target location
+vel_threshold = 1e-3; %0.1e-3; % velocity threshold for determine is the robot is at the target location
 
 %% hardware setups
 handles.closedWindow = 0;
@@ -121,6 +121,8 @@ handles.data.yVel = 0;  % velocity in y direction
 handles.data.thetaVel = 0;  % angular velocity
 handles.data.prevXpos = 0;  % previous x position
 handles.data.prevYpos = 0;  % previous y position
+handles.data.err_xPos = 0; % initialize x position error
+handles.data.err_yPos = 0; % initialize y position error
 handles.data.err_prev_x = 0;% previous position error in x direction
 handles.data.err_prev_y = 0;% previous position error in y direction
 handles.data.sum_err_x = 0; % sum of position error in x coordinates
@@ -129,16 +131,18 @@ handles.data.last_t = 0; % current time
 handles.data.dt = handles.data.last_t - handles.data.prev_t;     % delta_t
 handles.data.goalReached = 0; % boolean to determine if the target is reached
 
-% initialize desired location
-handles.data.desired_x = 0e-3;
-handles.data.desired_y = 0e-3;
-handles.data.desired_theta = pi/4;
+% initialize desired location 
+%[x,y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
+x = 0e-3; y = 0e-3;
+handles.data.desired_x = x;
+handles.data.desired_y = y;
+handles.data.desired_theta = 4*pi/3;
 handles.data.image_desired_x = handles.data.desired_x / scalar + handles.data.petri_center(1);
 handles.data.image_desired_y = handles.data.desired_y / scalar + handles.data.petri_center(2);
 
 % define trajectory
 % TODO8: Use the following cases to test your dipole model. You can change the shapes or add new shapes here
-shape = 1; % 1: diamond, 2: circle
+shape = 2; % 1: diamond, 2: circle
 
 switch shape
     case 1 % diamond

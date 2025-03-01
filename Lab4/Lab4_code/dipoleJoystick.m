@@ -48,21 +48,23 @@ else
             + (dot(m,r_hat(:,i))*m_c_tilde(:,i))...
             + (dot(m_c_tilde(:,i),m)*r_hat(:,i))...
             - (5*dot(m_c_tilde(:,i),r_hat(:,i))*dot(m,r_hat(:,i))*(r_hat(:,i))));
+
     end
     C = [B_tilde;F_tilde];
     
     % TODO3:  Uncomment lines and define desired heading and force
 
-    alpha = 1.5e-5; %0-20
+    alpha = 3e-5; % 0-20
 
     h_des_x = rh; % Desired Orientation from joystick
     h_des_y = rv;
+    %h_des_x = cos(pi/4); h_des_y = sin(pi/4);
     h_des = [h_des_x; h_des_y];  h_des = alpha*h_des/norm(h_des);
 
     %
     F_des_x = lh; % define desired F from joystick
     F_des_y = lv;
-    F_des = [F_des_x; F_des_y] 
+    F_des = [F_des_x; F_des_y]; 
 
     %tuning
     %F_des = [0;0];
@@ -83,8 +85,8 @@ if curr_sum >MAX_CURR
     u = u/curr_sum*MAX_CURR;
 end
 
-% disp("orientation:")
-% disp(rad2deg(data.curr_theta))
+disp("orientation:")
+disp(rad2deg(data.curr_theta))
 % disp("coil commands:")
 % disp(u)
 end

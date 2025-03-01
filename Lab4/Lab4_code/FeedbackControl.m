@@ -43,22 +43,26 @@ if(settings.dipole_model) % dipole model with position and orientation control
     C = [B_tilde;F_tilde];
     
     % desired heading - open loop
-    alpha = 0.25; % 0-20
+    alpha = 1.85e-8; % 0-20
+    %{
     [lh, lv, rh, rv] = joystickOutput(data);
     h_des_x = rh; % Desired Orientation from joystick
     h_des_y = rv;
+    %}
+    h_des_x = cos(data.desired_theta);
+    h_des_y = sin(data.desired_theta);
     h_des = [h_des_x; h_des_y];  h_des = alpha*h_des/norm(h_des);
 
     % desired force - PID
     [PID_x, PID_y] = controlEffort(data, settings);
     F_des_x = PID_x;
     F_des_y = PID_y;
-    F_des = [F_des_x; F_des_y];
+    F_des = [F_des_x; F_des_y]
 
     M1 = [h_des;F_des];
 
     % Define coil currents here
-    u = inv(C)*M1;
+    u = inv(C)*M1
 
 else % pid controller without dipole model
 
@@ -95,9 +99,9 @@ end
 
 %% control law helper function
 function [PID_x, PID_y] = controlEffort(data, settings)
-kp = 0.6*0.1e3;
-ki = 0.002*0.5e3;
-kd = 0.15*sqrt(kp); % (mass spring damper critical - good starting point) %0.01*0.5e3;
+kp = 11.3e-5;
+ki = 1.5e-5;
+kd = 7e-4*sqrt(kp); % (mass spring damper critical - good starting point) %0.01*0.5e3;
 
 % define the error
 data.err_xPos = data.desired_x - data.curr_x;
