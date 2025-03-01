@@ -57,7 +57,6 @@ if(settings.dipole_model) % dipole model with position and orientation control
     [PID_x, PID_y] = controlEffort(data, settings);
     F_des_x = PID_x;
     F_des_y = PID_y;
-    b=5;
     F_des = [F_des_x; F_des_y]
 
     M1 = [h_des;F_des];

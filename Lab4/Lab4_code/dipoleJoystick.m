@@ -74,8 +74,7 @@ else
     %Finish computing coil currents as shown in Class lectures
 
     % TODO4: Uncomment and Define Coil Currents here
-    I = inv(C)*M1;
-    u = [I(1); I(2); I(3); I(4)]
+    u = inv(C)*M1;
 
 end
 
