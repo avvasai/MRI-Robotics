@@ -11,21 +11,21 @@ settings.videoRecording_on = 1;
 
 % Use these settings to switch between P, PI, PD and PID control as needed.
 settings.p_control = 1;
-settings.i_control = 1;
-settings.d_control = 1;
+settings.i_control = 0;
+settings.d_control = 0;
 
 % TODO1: change settings based on the problem you are working on
 settings.dipole_joysitck = 0;
 settings.dipole_model = 1;
 
 % TODO2: change this to 1 when you want to follow trajectory
-settings.trajectory_following_on = 1;
+settings.trajectory_following_on = 0;
 
 % set threshold to determine if the robot is at desired location
 % TODO3: change threshold to make trajecotry work. Find the minimum
 % threshold. The threshold value must be given in meters
 threshold = 4e-3; %2e-3 % position threshold for determine is the robot is at the target location
-vel_threshold = 1e-3; %0.1e-3; % velocity threshold for determine is the robot is at the target location
+vel_threshold = 3e-3; %0.1e-3; % velocity threshold for determine is the robot is at the target location
 
 %% hardware setups
 handles.closedWindow = 0;
@@ -132,11 +132,11 @@ handles.data.dt = handles.data.last_t - handles.data.prev_t;     % delta_t
 handles.data.goalReached = 0; % boolean to determine if the target is reached
 
 % initialize desired location 
-%[x,y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
-x = 0e-3; y = 0e-3;
+[x,y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
+%x = 0e-3; y = 0e-3;
 handles.data.desired_x = x;
 handles.data.desired_y = y;
-handles.data.desired_theta = 4*pi/3;
+handles.data.desired_theta = pi/4;
 handles.data.image_desired_x = handles.data.desired_x / scalar + handles.data.petri_center(1);
 handles.data.image_desired_y = handles.data.desired_y / scalar + handles.data.petri_center(2);
 
