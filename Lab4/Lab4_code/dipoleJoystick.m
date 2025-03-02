@@ -54,7 +54,7 @@ else
     
     % TODO3:  Uncomment lines and define desired heading and force
 
-    alpha = 2.5e-5; % 0-20
+    alpha = 0.15e-13; % 0-20
 
     h_des_x = rh; % Desired Orientation from joystick
     h_des_y = rv;

@@ -100,9 +100,11 @@ end
 
 %% control law helper function
 function [PID_x, PID_y] = controlEffort(data, settings)
-kp = 1e-4;
+kp_x = (0.09e-3); %(0.11e-3); 
+kp_y = (0.12e-3);
 ki = 1.5e-5;
-kd = 7e-4*sqrt(kp); % (mass spring damper critical - good starting point) %0.01*0.5e3;
+kd_x = (0.08e-1*sqrt(kp_x)/5.7); 
+kd_y = (0.11e-1*sqrt(kp_y)/5.2);% (mass spring damper critical - good starting point) %0.01*0.5e3;
 
 % define the error
 data.err_xPos = data.desired_x - data.curr_x;
@@ -118,10 +120,10 @@ data.sum_err_y = data.sum_err_y + data.err_yPos*data.dt;
 
 % total control law
 PID_x = [settings.p_control settings.i_control settings.d_control]*...
-    [kp*data.err_xPos; ki*data.sum_err_x; kd*err_x_dot];
+    [kp_x*data.err_xPos; ki*data.sum_err_x; kd_x*err_x_dot];
 
 PID_y = [settings.p_control settings.i_control settings.d_control]*...
-    [kp*data.err_yPos; ki*data.sum_err_y; kd*err_y_dot];
+    [kp_y*data.err_yPos; ki*data.sum_err_y; kd_y*err_y_dot];
 
 end
 

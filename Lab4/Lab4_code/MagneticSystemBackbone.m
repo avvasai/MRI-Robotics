@@ -12,7 +12,7 @@ settings.videoRecording_on = 1;
 % Use these settings to switch between P, PI, PD and PID control as needed.
 settings.p_control = 1;
 settings.i_control = 0;
-settings.d_control = 0;
+settings.d_control = 1;
 
 % TODO1: change settings based on the problem you are working on
 settings.dipole_joysitck = 0;
@@ -24,8 +24,8 @@ settings.trajectory_following_on = 0;
 % set threshold to determine if the robot is at desired location
 % TODO3: change threshold to make trajecotry work. Find the minimum
 % threshold. The threshold value must be given in meters
-threshold = 4e-3; %2e-3 % position threshold for determine is the robot is at the target location
-vel_threshold = 3e-3; %0.1e-3; % velocity threshold for determine is the robot is at the target location
+threshold = 5e-3; %2e-3 % position threshold for determine is the robot is at the target location
+vel_threshold = 1e-3; %0.1e-3; % velocity threshold for determine is the robot is at the target location
 
 %% hardware setups
 handles.closedWindow = 0;
@@ -33,7 +33,7 @@ handles.joy = vrjoystick(1); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % intialize video
 
 %TODO4: Check COM port
-handles.arduino = serialport('COM3', 115200);%initialize arduino communciation
+handles.arduino = serialport('COM4', 115200);%initialize arduino communciation
 
 %% Defining magnetic component of the magnet
 % TODO5: change the dimensions with repect to your robot
