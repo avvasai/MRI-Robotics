@@ -43,7 +43,7 @@ if(settings.dipole_model) % dipole model with position and orientation control
     C = [B_tilde;F_tilde];
     
     % desired heading - open loop
-    alpha = 2.5e-7; % 0-20
+    alpha = 2.5e-8; % 0-20
     %{
     [lh, lv, rh, rv] = joystickOutput(data);
     h_des_x = rh; % Desired Orientation from joystick

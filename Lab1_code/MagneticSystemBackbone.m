@@ -17,7 +17,7 @@ handles.joy = vrjoystick(1); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % intialize video
 
 % TODO: You may need to change 'COM3' to your COM
-handles.arduino = serialport('COM3', 115200);%initialize arduino communciation
+handles.arduino = serialport('COM4', 115200);%initialize arduino communciation
 
 %% setup camera parameters
 src = getselectedsource(handles.video);

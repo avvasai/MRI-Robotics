@@ -11,12 +11,12 @@ settings.videoRecording_on = 1;
 
 % Use these settings to switch between P, PI, PD and PID control as needed.
 settings.p_control = 1;
-settings.i_control = 0;
+settings.i_control = 1;
 settings.d_control = 1;
 
 % TODO1: change settings based on the problem you are working on
-settings.dipole_joysitck = 0;
-settings.dipole_model = 1;
+settings.dipole_joysitck = 1;
+settings.dipole_model = 0;
 
 % TODO2: change this to 1 when you want to follow trajectory
 settings.trajectory_following_on = 0;
