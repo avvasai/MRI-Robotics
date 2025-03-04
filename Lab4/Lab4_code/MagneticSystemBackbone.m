@@ -15,8 +15,8 @@ settings.i_control = 0;
 settings.d_control = 0;
 
 % TODO1: change settings based on the problem you are working on
-settings.dipole_joysitck = 0;
-settings.dipole_model = 1;
+settings.dipole_joysitck = 1;
+settings.dipole_model = 0;
 
 % TODO2: change this to 1 when you want to follow trajectory
 settings.trajectory_following_on = 0;
@@ -132,8 +132,8 @@ handles.data.dt = handles.data.last_t - handles.data.prev_t;     % delta_t
 handles.data.goalReached = 0; % boolean to determine if the target is reached
 
 % initialize desired location 
-[x,y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
-%x = 0e-3; y = 0e-3;
+%[x,y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
+x = 0e-3; y = 0e-3;
 handles.data.desired_x = x;
 handles.data.desired_y = y;
 handles.data.desired_theta = pi/4;
