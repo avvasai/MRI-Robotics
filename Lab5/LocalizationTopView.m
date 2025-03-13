@@ -145,7 +145,7 @@
 % end
 
 
-function [x, y, theta,isLocWorking,red_centroid,blue_centroid] = LocalizationTopView(current_frame)
+function [x, y, theta,isLocWorking,red_centroid,blue_centroid, robot_centroid_xy] = LocalizationTopView(current_frame)
 % Function to localize the magnetic robot
 
 % TODO: The following gives a example to find two a red region and a blue region
@@ -207,6 +207,8 @@ if (length(red_region) >= 1)
     center_dif = red_centroid - center;
     %theta = atan2d(center_dif(2), -center_dif(1));
     theta = atan2((red_centroid(2)-blue_centroid(2)), ((red_centroid(1)-blue_centroid(1)))); %atan2((y2-y1),(x2-x1))
+    robot_centroid_xy = [(blue_centroid_xy(1) + red_centroid_xy(1)) / 2, (blue_centroid_xy(2) + red_centroid_xy(2)) / 2];
+
 
     isLocWorking = 1;
 else
@@ -220,7 +222,6 @@ end
 
 
 end
-
 
 
 
