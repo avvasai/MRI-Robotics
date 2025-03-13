@@ -207,7 +207,7 @@ if (length(red_region) >= 1)
     center_dif = red_centroid - center;
     %theta = atan2d(center_dif(2), -center_dif(1));
     theta = atan2((red_centroid(2)-blue_centroid(2)), ((red_centroid(1)-blue_centroid(1)))); %atan2((y2-y1),(x2-x1))
-    robot_centroid_xy = [(blue_centroid_xy(1) + red_centroid_xy(1)) / 2, (blue_centroid_xy(2) + red_centroid_xy(2)) / 2];
+    robot_centroid_xy = [(blue_centroid(1) + red_centroid(1)) / 2, (blue_centroid(2) + red_centroid(2)) / 2];
 
 
     isLocWorking = 1;
@@ -222,6 +222,10 @@ end
 
 
 end
+
+
+
+
 
 
 

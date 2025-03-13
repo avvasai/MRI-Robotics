@@ -8,9 +8,9 @@ settings.closedloop_control_on = 0;
 settings.image_processing_on = 1;
 settings.videoRecording_on = 1;
 
-settings.p_control = 1;
-settings.i_control = 1;
-settings.d_control = 1;
+settings.p_control = 0;
+settings.i_control = 0;
+settings.d_control = 0;
 
 settings.dipole_joysitck = 1;
 settings.dipole_model = 0;
@@ -143,7 +143,8 @@ while (~FS.Stop())
                                  (handles.data.curr_y - handles.data.prev_centroid(2))^2);
 
     % joystick direction detection/tracking
-    joystick_vector = handles.data.joyReading;
+    [joystick_vector] = JoystickActuation(handles.joy);
+    joystick_vector = [joystick_vector(1) joystick_vector(2)];
     robot_dxdy_vector = [handles.data.curr_x - handles.data.prev_centroid(1), handles.data.curr_y - handles.data.prev_centroid(2)];
 
     % norm the joystick and robot to get directions
@@ -172,7 +173,7 @@ while (~FS.Stop())
     if (settings.closedloop_control_on && handles.data.isLocWorking)
         if (~handles.data.goalReached)
             if settings.dipole_joysitck
-                [handles.data.joyReading] = JoystickActuation(handles.joy);
+                [handles.joy] = JoystickActuation(handles.joy);
                 [u, handles.data] = dipoleJoystick(handles.data);
             else
                 [u, handles.data] = FeedbackControl(handles.data, settings);
@@ -235,3 +236,4 @@ while (~FS.Stop())
     end
 
 end
+
