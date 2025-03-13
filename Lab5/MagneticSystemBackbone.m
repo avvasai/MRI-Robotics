@@ -4,7 +4,7 @@ close all
 
 %% system settings
 settings.saveon = 1;
-settings.closedloop_control_on = 1;
+settings.closedloop_control_on = 0;
 settings.image_processing_on = 1;
 settings.videoRecording_on = 1;
 
@@ -156,11 +156,11 @@ while (~FS.Stop())
     if ((centroid_displacement > handles.data.centroid_threshold) && (dot_product > 0.9))
         handles.data.prev_centroid = [handles.data.curr_x, handles.data.curr_y];
          disp('No wall yet');
-    else ((centroid_displacement < handles.data.centroid_threshold) && (dot_product > 0.9))
+    elseif ((centroid_displacement < handles.data.centroid_threshold) && (dot_product > 0.9))
          disp('Wall is being hit');
         %%%% vibrate
         joyVibrate(handles.joy,0.5);
-    else dot_product < 0.9
+    elseif dot_product < 0.9
         handles.data.prev_centroid = [handles.data.curr_x, handles.data.curr_y];
         disp("Not headed in same direction");
     end
