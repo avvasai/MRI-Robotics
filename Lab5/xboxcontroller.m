@@ -1,1 +1,4 @@
-j = vrjoystick(1,"forcefeedback")
+function joyForceFeedback(joy, f)
+% simple single axis vibration 
+force(joy, 1, f)
+
