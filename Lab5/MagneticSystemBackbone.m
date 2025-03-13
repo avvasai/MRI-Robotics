@@ -22,7 +22,7 @@ vel_threshold = 1e-3; % velocity threshold for determine if the robot is at the 
 
 %% hardware setups
 handles.closedWindow = 0;
-handles.joy = vrjoystick(1); % initialize joystick
+handles.joy = vrjoystick(1,'forcefeedback'); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % initialize video
 handles.arduino = serialport('COM4', 115200); % initialize Arduino communication
 
@@ -159,6 +159,7 @@ while (~FS.Stop())
     else ((centroid_displacement < handles.data.centroid_threshold) && (dot_product > 0.9))
          disp('Wall is being hit');
         %%%% vibrate
+        joyVibrate(handles.joy,0.5);
     else dot_product < 0.9
         handles.data.prev_centroid = [handles.data.curr_x, handles.data.curr_y];
         disp("Not headed in same direction");
