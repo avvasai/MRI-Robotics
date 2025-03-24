@@ -4,7 +4,7 @@ close all
 
 %% system settings
 settings.saveon = 1;
-settings.closedloop_control_on = 0;
+settings.closedloop_control_on = 1;
 settings.image_processing_on = 1;
 settings.videoRecording_on = 1;
 
@@ -24,7 +24,7 @@ vel_threshold = 1e-3; % velocity threshold for determine if the robot is at the 
 handles.closedWindow = 0;
 handles.joy = vrjoystick(1,'forcefeedback'); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % initialize video
-handles.arduino = serialport('COM4', 115200); % initialize Arduino communication
+handles.arduino = serialport('COM7', 115200); % initialize Arduino communication
 
 %% Defining magnetic component of the magnet
 l_magnet = 4e-3; %m
@@ -77,14 +77,26 @@ handles.data.prev_t = -0.1;
 handles.data.prev_centroid = [0, 0]; % Previous robot centroid (x, y)
 handles.data.centroid_threshold = 5e-3; % Threshold to detect significant movement
 
-% Initialize position control variables
-handles.data.xVel = 0;
-handles.data.yVel = 0;
-handles.data.prevXpos = 0;
-handles.data.prevYpos = 0;
+% initialize important variables for pid control
+% all of these variables are in robot coordinates (in meters)
+handles.data.xVel = 0;  % velocity in x direction
+handles.data.yVel = 0;  % velocity in y direction
+handles.data.thetaVel = 0;  % angular velocity
+handles.data.prevXpos = 0;  % previous x position
+handles.data.prevYpos = 0;  % previous y position
+handles.data.err_xPos = 0; % initialize x position error
+handles.data.err_yPos = 0; % initialize y position error
+handles.data.err_prev_x = 0;% previous position error in x direction
+handles.data.err_prev_y = 0;% previous position error in y direction
+handles.data.sum_err_x = 0; % sum of position error in x coordinates
+handles.data.sum_err_y = 0; % sum of position error in y coordinates
+handles.data.last_t = 0; % current time
+handles.data.dt = handles.data.last_t - handles.data.prev_t;     % delta_t
+handles.data.goalReached = 0; % boolean to determine if the target is reached
 
 % Initialize desired location
-[x, y] = desiredpoints(current_frame, handles.data.petri_center, scalar);
+%[x, y] = desiredpoints(current_frame, handles.data.petri_center, scalar);
+x = 0e-3; y = 0e-3;
 handles.data.desired_x = x;
 handles.data.desired_y = y;
 handles.data.desired_theta = pi / 4;
@@ -157,6 +169,7 @@ while (~FS.Stop())
     if ((centroid_displacement > handles.data.centroid_threshold) && (dot_product > 0.9))
         handles.data.prev_centroid = [handles.data.curr_x, handles.data.curr_y];
          disp('No wall yet');
+         joyVibrate(handles.joy,0);
     elseif ((centroid_displacement < handles.data.centroid_threshold) && (dot_product > 0.9))
          disp('Wall is being hit');
         %%%% vibrate
@@ -164,6 +177,7 @@ while (~FS.Stop())
     elseif dot_product < 0.9
         handles.data.prev_centroid = [handles.data.curr_x, handles.data.curr_y];
         disp("Not headed in same direction");
+        joyVibrate(handles.joy,0);
     end
 
     %%% END LAB 5 CONTROL ADDITIONS
@@ -173,7 +187,7 @@ while (~FS.Stop())
     if (settings.closedloop_control_on && handles.data.isLocWorking)
         if (~handles.data.goalReached)
             if settings.dipole_joysitck
-                [handles.joy] = JoystickActuation(handles.joy);
+                [handles.data.joyReading] = JoystickActuation(handles.joy);
                 [u, handles.data] = dipoleJoystick(handles.data);
             else
                 [u, handles.data] = FeedbackControl(handles.data, settings);

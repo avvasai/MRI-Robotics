@@ -26,7 +26,7 @@ else
     r1 = [0; 0.08]; r2 = [-0.08; 0]; r3 = [0.08;0]; r4 = [0;-0.08]; %coil positions
     r = -[r1,r2,r3,r4]+[data.curr_x; data.curr_y];
     r_hat = [r1/norm(r1),r2/norm(r2),r3/norm(r3),r4/norm(r4)]; % unit pos vec matrix
-    n_hat = -1*[[0;1], [-1;0], [1;0], [0;-1]]; % coil orientations
+    n_hat = 1*[[0;1], [-1;0], [1;0], [0;-1]]; % coil orientations
 
     m_c_tilde = N*coil_area*1*n_hat; % unit magnetic moment matrix
 
