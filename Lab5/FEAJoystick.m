@@ -1,4 +1,4 @@
-function [I] = CalculateVector_FEAJoystick(joy_axis, data, settings)
+function [I] = FEAJoystick(joy_axis, data, settings)
 %joy_axis(1)--lh, right--1
 %joy_axis(2)--lv, down--1
 %joy_axis(4)--rh, right--1
