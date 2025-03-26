@@ -176,7 +176,7 @@ while (~FS.Stop())
         disp('Wall is being hit')
         %%%% vibrate
         t_start = tic;
-        f = toc;
+        f = toc/10;
         joyVibrate(handles.joy,f);
     else %dot_product < 0.9
         handles.data.prev_centroid = [handles.data.curr_x, handles.data.curr_y];
