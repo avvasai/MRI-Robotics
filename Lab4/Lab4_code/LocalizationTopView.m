@@ -161,9 +161,9 @@ function [x, y, theta,isLocWorking,red_centroid,blue_centroid] = LocalizationTop
 %   blue_centroid: centroid of blue region
 
 
-red_thr = 0.85; % threshold for red object (0-1)
+red_thr = 0.73; % threshold for red object (0-1)
 red_area_size = 70; % size of the object in pixel
-blue_thr = 0.85; % threshold for blue object (0-1)
+blue_thr = 0.90; % threshold for blue object (0-1)
 blue_area_size = 70; % size of object in pixel
 
 rgbaq = current_frame; % read image

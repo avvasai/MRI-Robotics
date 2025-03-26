@@ -56,14 +56,14 @@ else
 
     alpha = 0.15e-13; % 0-20
 
-    h_des_x = rh % Desired Orientation from joystick
-    h_des_y = rv
+    h_des_x = rh; % Desired Orientation from joystick
+    h_des_y = rv;
     %h_des_x = cos(pi/4); h_des_y = sin(pi/4);
     h_des = [h_des_x; h_des_y];  h_des = alpha*h_des/norm(h_des);
 
     %
-    F_des_x = lh % define desired F from joystick
-    F_des_y = lv
+    F_des_x = lh; % define desired F from joystick
+    F_des_y = lv;
     F_des = [F_des_x; F_des_y]; 
 
     %tuning
@@ -87,6 +87,6 @@ end
 
 % disp("orientation:")
 % disp(rad2deg(data.curr_theta))
-disp("coil commands:")
-disp(u)
+% disp("coil commands:")
+% disp(u)
 end

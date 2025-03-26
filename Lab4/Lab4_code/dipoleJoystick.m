@@ -63,7 +63,7 @@ else
 
     %
     F_des_x = lh; % define desired F from joystick
-    F_des_y = lv;
+    F_des_y = lv
     F_des = [F_des_x; F_des_y]; 
 
     %tuning
@@ -75,7 +75,7 @@ else
 
     % TODO4: Uncomment and Define Coil Currents here
     I = inv(C)*M1;
-    u = [I(1); I(2); I(3); I(4)]
+    u = [I(1); I(2); I(3); I(4)];
 
 end
 
@@ -88,6 +88,6 @@ end
 
 % disp("orientation:")
 % disp(rad2deg(data.curr_theta))
-disp("coil commands:")
-disp(u)
+% disp("coil commands:")
+% disp(u)
 end

@@ -154,7 +154,7 @@ while (~FS.Stop())
     % Calculate displacement of the centroid -- prev_centroid first
     % initialized way up
     centroid_displacement = sqrt((handles.data.curr_x - handles.data.prevXpos)^2 + ...
-        (handles.data.curr_y - handles.data.prevYpos)^2);
+                                 (handles.data.curr_y - handles.data.prevYpos)^2);
 
     % joystick direction detection/tracking
     [joystick_vector] = JoystickActuation(handles.joy);
@@ -164,20 +164,22 @@ while (~FS.Stop())
     % norm the joystick and robot to get directions
     joystick_direction = joystick_vector / norm(joystick_vector);
     robot_direction = robot_dxdy_vector / norm(robot_dxdy_vector);
-
+    
     % dot product to see if same direction
     dot_product = dot(joystick_direction, robot_direction); % if dot product is = 1 then moving in the same direction, leave some flexibility to the alignment - use 0.9 ?
 
     if ((centroid_displacement > handles.data.centroid_threshold)) %&& (dot_product > 0.9))
         handles.data.prev_centroid = [handles.data.curr_x, handles.data.curr_y];
-        disp('No wall yet');
-        joyVibrate(handles.joy,0);
+         disp('No wall yet');
+         joyVibrate(handles.joy,0);
     elseif ((centroid_displacement < handles.data.centroid_threshold)) %&& (dot_product > 0.9))
         disp('Wall is being hit')
         %%%% vibrate
         t_start = tic;
-        f = toc;
-        joyVibrate(handles.joy,f);
+        while 
+        end
+        joyVibrate(handles.joy,0.5);
+        t_elapsed = toc;
     else %dot_product < 0.9
         handles.data.prev_centroid = [handles.data.curr_x, handles.data.curr_y];
         disp("Not headed in same direction");
@@ -185,7 +187,7 @@ while (~FS.Stop())
     end
 
     %%% END LAB 5 CONTROL ADDITIONS
-
+    
 
     % Control logic
     if (settings.closedloop_control_on && handles.data.isLocWorking)
@@ -199,7 +201,7 @@ while (~FS.Stop())
         end
 
         if ((abs(handles.data.desired_x - handles.data.curr_x) <= threshold) && (abs(handles.data.desired_y - handles.data.curr_y) <= threshold) && ...
-                (abs(handles.data.xVel) <= vel_threshold) && (abs(handles.data.yVel) <= vel_threshold))
+            (abs(handles.data.xVel) <= vel_threshold) && (abs(handles.data.yVel) <= vel_threshold))
             if (ctr == trajectory_size)
                 handles.data.goalReached = 1;
                 disp('goal reached');
