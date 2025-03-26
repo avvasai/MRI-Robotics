@@ -23,6 +23,8 @@ vel_threshold = 1e-3; % velocity threshold for determine if the robot is at the 
 %% hardware setups
 handles.closedWindow = 0;
 handles.joy = vrjoystick(1,'forcefeedback'); % initialize joystick
+force(handles.joy,1,0);
+force(handles.joy,2,0);
 handles.video = videoinput('gentl', 1, 'BGR8'); % initialize video
 handles.arduino = serialport('COM7', 115200); % initialize Arduino communication
 
