@@ -56,14 +56,14 @@ else
 
     alpha = 0.15e-13; % 0-20
 
-    h_des_x = rh; % Desired Orientation from joystick
-    h_des_y = rv;
+    h_des_x = rh % Desired Orientation from joystick
+    h_des_y = rv
     %h_des_x = cos(pi/4); h_des_y = sin(pi/4);
     h_des = [h_des_x; h_des_y];  h_des = alpha*h_des/norm(h_des);
 
     %
-    F_des_x = lh; % define desired F from joystick
-    F_des_y = lv;
+    F_des_x = lh % define desired F from joystick
+    F_des_y = lv
     F_des = [F_des_x; F_des_y]; 
 
     %tuning
@@ -74,8 +74,7 @@ else
     %Finish computing coil currents as shown in Class lectures
 
     % TODO4: Uncomment and Define Coil Currents here
-    I = inv(C)*M1;
-    u = [I(1); I(2); I(3); I(4)]
+    u = C\M1;
 
 end
 
@@ -86,8 +85,8 @@ if curr_sum >MAX_CURR
     u = u/curr_sum*MAX_CURR;
 end
 
-disp("orientation:")
-disp(rad2deg(data.curr_theta))
-% disp("coil commands:")
-% disp(u)
+% disp("orientation:")
+% disp(rad2deg(data.curr_theta))
+disp("coil commands:")
+disp(u)
 end

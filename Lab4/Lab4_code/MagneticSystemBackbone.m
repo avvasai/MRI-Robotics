@@ -33,7 +33,7 @@ handles.joy = vrjoystick(1); % initialize joystick
 handles.video = videoinput('gentl', 1, 'BGR8'); % intialize video
 
 %TODO4: Check COM port
-handles.arduino = serialport('COM4', 115200);%initialize arduino communciation
+handles.arduino = serialport('COM7', 115200);%initialize arduino communciation
 
 %% Defining magnetic component of the magnet
 % TODO5: change the dimensions with repect to your robot
@@ -132,8 +132,8 @@ handles.data.dt = handles.data.last_t - handles.data.prev_t;     % delta_t
 handles.data.goalReached = 0; % boolean to determine if the target is reached
 
 % initialize desired location 
-[x,y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
-%x = 0e-3; y = 0e-3;
+%[x,y] = desiredpoints(current_frame,handles.data.petri_center,scalar);
+x = 0e-3; y = 0e-3;
 handles.data.desired_x = x;
 handles.data.desired_y = y;
 handles.data.desired_theta = pi/4;

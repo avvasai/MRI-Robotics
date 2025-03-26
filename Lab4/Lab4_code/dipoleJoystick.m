@@ -86,8 +86,8 @@ if curr_sum >MAX_CURR
     u = u/curr_sum*MAX_CURR;
 end
 
-disp("orientation:")
-disp(rad2deg(data.curr_theta))
-% disp("coil commands:")
-% disp(u)
+% disp("orientation:")
+% disp(rad2deg(data.curr_theta))
+disp("coil commands:")
+disp(u)
 end
