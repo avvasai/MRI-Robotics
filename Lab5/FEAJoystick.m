@@ -97,7 +97,8 @@ else
 
     F_tilde=[F_tilde_S(1) -F_tilde_W(2) F_tilde_E(2) -F_tilde_N(1);
             F_tilde_S(2) F_tilde_W(1) -F_tilde_E(1) -F_tilde_N(2)];
-
+    
+    alpha = 0.15e-13; % 0-20
     h_des_x =rh; % Desired Orientation from joystick 
     h_des_y =rv;
     h_des = [h_des_x; h_des_y];
