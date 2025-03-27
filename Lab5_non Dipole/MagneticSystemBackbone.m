@@ -71,6 +71,9 @@ setappdata(fig, 'cam', handles.video);
 current_frame = filterOutsideCircle(current_frame, handles.data.petri_center(1), handles.data.petri_center(2), handles.data.petri_radius);
 scalar = 0.085 / (handles.data.petri_radius * 2); % m/pixel
 
+%% locate maze walls
+P = findMaze(current_frame);
+
 %% initialize control related parameters
 handles.data.isLocWorking = 1;
 handles.data.prev_t = -0.1;
