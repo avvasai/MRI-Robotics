@@ -77,7 +77,7 @@ handles.data.prev_t = -0.1;
 
 % initialize centroid tracking variables
 handles.data.prev_centroid = [0, 0]; % Previous robot centroid (x, y)
-handles.data.centroid_threshold = 5e-3; % Threshold to detect significant movement
+handles.data.centroid_threshold = 5e-5; % Threshold to detect significant movement
 
 % initialize important variables for pid control
 % all of these variables are in robot coordinates (in meters)
@@ -153,51 +153,54 @@ while (~FS.Stop())
 
     % Calculate displacement of the centroid -- prev_centroid first
     % initialized way up
-    centroid_displacement = sqrt((handles.data.curr_x - handles.data.prev_centroid(1))^2 + ...
-                                 (handles.data.curr_y - handles.data.prev_centroid(2))^2);
+    centroid_displacement = sqrt((handles.data.curr_x - handles.data.prevXpos)^2 + ...
+        (handles.data.curr_y - handles.data.prevYpos)^2);
 
     % joystick direction detection/tracking
     [joystick_vector] = JoystickActuation(handles.joy);
     joystick_vector = [joystick_vector(1) joystick_vector(2)];
-    robot_dxdy_vector = [handles.data.curr_x - handles.data.prev_centroid(1), handles.data.curr_y - handles.data.prev_centroid(2)];
+    robot_dxdy_vector = [handles.data.curr_x - handles.data.prevXpos, handles.data.curr_y - handles.data.prevYpos];
 
     % norm the joystick and robot to get directions
     joystick_direction = joystick_vector / norm(joystick_vector);
     robot_direction = robot_dxdy_vector / norm(robot_dxdy_vector);
-    
+
     % dot product to see if same direction
     dot_product = dot(joystick_direction, robot_direction); % if dot product is = 1 then moving in the same direction, leave some flexibility to the alignment - use 0.9 ?
 
-    if ((centroid_displacement > handles.data.centroid_threshold) && (dot_product > 0.9))
+    if ((centroid_displacement > handles.data.centroid_threshold)) %&& (dot_product > 0.9))
         handles.data.prev_centroid = [handles.data.curr_x, handles.data.curr_y];
-         disp('No wall yet');
-         joyVibrate(handles.joy,0);
-    elseif ((centroid_displacement < handles.data.centroid_threshold) && (dot_product > 0.9))
-         disp('Wall is being hit');
+        disp('No wall yet');
+        joyVibrate(handles.joy,0);
+    elseif ((centroid_displacement < handles.data.centroid_threshold)) %&& (dot_product > 0.9))
+        disp('Wall is being hit')
         %%%% vibrate
-        joyVibrate(handles.joy,0.5);
-    elseif dot_product < 0.9
+        t_start = tic;
+        f = toc/10;
+        joyVibrate(handles.joy,f);
+    else %dot_product < 0.9
         handles.data.prev_centroid = [handles.data.curr_x, handles.data.curr_y];
         disp("Not headed in same direction");
         joyVibrate(handles.joy,0);
     end
 
     %%% END LAB 5 CONTROL ADDITIONS
-    
+
 
     % Control logic
     if (settings.closedloop_control_on && handles.data.isLocWorking)
         if (~handles.data.goalReached)
             if settings.dipole_joysitck
                 [handles.data.joyReading] = JoystickActuation(handles.joy);
-                [u, handles.data] = dipoleJoystick(handles.data);
+                %[u, handles.data] = dipoleJoystick(handles.data);
+                [u] = JoystickActuation(handles.joy);
             else
                 [u, handles.data] = FeedbackControl(handles.data, settings);
             end
         end
 
         if ((abs(handles.data.desired_x - handles.data.curr_x) <= threshold) && (abs(handles.data.desired_y - handles.data.curr_y) <= threshold) && ...
-            (abs(handles.data.xVel) <= vel_threshold) && (abs(handles.data.yVel) <= vel_threshold))
+                (abs(handles.data.xVel) <= vel_threshold) && (abs(handles.data.yVel) <= vel_threshold))
             if (ctr == trajectory_size)
                 handles.data.goalReached = 1;
                 disp('goal reached');
