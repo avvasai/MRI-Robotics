@@ -1,16 +1,17 @@
+
 clc
 clear all
 close all
 
 %% system settings
 settings.saveon = 1;
-settings.closedloop_control_on = 1;
+settings.closedloop_control_on = 0;
 settings.image_processing_on = 1;
 settings.videoRecording_on = 1;
 
-settings.p_control = 0;
-settings.i_control = 0;
-settings.d_control = 0;
+settings.p_control = 1;
+settings.i_control = 1;
+settings.d_control = 1;
 
 settings.dipole_joysitck = 1;
 settings.dipole_model = 0;
@@ -23,11 +24,10 @@ vel_threshold = 1e-3; % velocity threshold for determine if the robot is at the 
 %% hardware setups
 handles.closedWindow = 0;
 handles.joy = vrjoystick(1,'forcefeedback'); % initialize joystick
-force(handles.joy,1,0);
-force(handles.joy,2,0);
 handles.video = videoinput('gentl', 1, 'BGR8'); % initialize video
-handles.arduino = serialport('COM7', 115200); % initialize Arduino communication
-
+handles.arduino = serialport('COM8', 115200); % initialize Arduino communication
+%%
+Wall = 0;
 %% Defining magnetic component of the magnet
 l_magnet = 4e-3; %m
 d_magnet = 1e-3; %m
@@ -58,9 +58,11 @@ handles.data.frameRateCam = [];
 handles.data.curr_x = [];
 handles.data.curr_y = [];
 
-handles.graphics.framerate = text(ax, handles.data.resolution(1)/3, handles.data.resolution(2)/15, ['Frame Rate ', num2str(handles.data.frameRateCam)], 'HorizontalAlignment', 'left');
-handles.graphics.Xgradient = text(ax, handles.data.resolution(1)/3, handles.data.resolution(2)/10, ['X ', num2str(handles.data.curr_x)], 'HorizontalAlignment', 'left');
-handles.graphics.Ygradient = text(ax, handles.data.resolution(1)/3, handles.data.resolution(2)/7.5, ['Y ', num2str(handles.data.curr_y)], 'HorizontalAlignment', 'left');
+handles.graphics.framerate = text(ax, handles.data.resolution(1)/3, handles.data.resolution(2)/15, ['Frame Rate ', num2str(handles.data.frameRateCam)], 'HorizontalAlignment', 'left', 'Color', 'white');
+handles.graphics.Xgradient = text(ax, handles.data.resolution(1)/3, handles.data.resolution(2)/10, ['X ', num2str(handles.data.curr_x)], 'HorizontalAlignment', 'left', 'Color', 'white');
+handles.graphics.Ygradient = text(ax, handles.data.resolution(1)/3, handles.data.resolution(2)/7.5, ['Y ', num2str(handles.data.curr_y)], 'HorizontalAlignment', 'left', 'Color', 'white');
+%handles.graphics.wallStatus = text(ax, handles.data.resolution(1)/3, handles.data.resolution(2)/5.5, ['Wall: No Wall'], 'HorizontalAlignment', 'left', 'Color', 'green');
+
 
 %% Start preview
 preview(handles.video, im)
@@ -71,16 +73,14 @@ setappdata(fig, 'cam', handles.video);
 current_frame = filterOutsideCircle(current_frame, handles.data.petri_center(1), handles.data.petri_center(2), handles.data.petri_radius);
 scalar = 0.085 / (handles.data.petri_radius * 2); % m/pixel
 
-%% locate maze walls
-P = findMaze(current_frame);
-
 %% initialize control related parameters
 handles.data.isLocWorking = 1;
 handles.data.prev_t = -0.1;
 
+
 % initialize centroid tracking variables
 handles.data.prev_centroid = [0, 0]; % Previous robot centroid (x, y)
-handles.data.centroid_threshold = 5e-5; % Threshold to detect significant movement
+handles.data.centroid_threshold = 5e-3; % Threshold to detect significant movement
 
 % initialize important variables for pid control
 % all of these variables are in robot coordinates (in meters)
@@ -100,8 +100,7 @@ handles.data.dt = handles.data.last_t - handles.data.prev_t;     % delta_t
 handles.data.goalReached = 0; % boolean to determine if the target is reached
 
 % Initialize desired location
-%[x, y] = desiredpoints(current_frame, handles.data.petri_center, scalar);
-x = 0e-3; y = 0e-3;
+[x, y] = desiredpoints(current_frame, handles.data.petri_center, scalar);
 handles.data.desired_x = x;
 handles.data.desired_y = y;
 handles.data.desired_theta = pi / 4;
@@ -154,37 +153,73 @@ while (~FS.Stop())
 
     %%% BEGIN LAB 5 CONTROL ADDITIONS
 
-    % Calculate displacement of the centroid -- prev_centroid first
-    % initialized way up
-    centroid_displacement = sqrt((handles.data.curr_x - handles.data.prevXpos)^2 + ...
-        (handles.data.curr_y - handles.data.prevYpos)^2);
 
-    % joystick direction detection/tracking
+    % Calculate displacement of the centroid
+    centroid_displacement = sqrt((handles.data.curr_x - handles.data.prev_centroid(1))^2 + ...
+        (handles.data.curr_y - handles.data.prev_centroid(2))^2);
+
+    % Get joystick input and calculate directions
     [joystick_vector] = JoystickActuation(handles.joy);
     joystick_vector = [joystick_vector(1) joystick_vector(2)];
-    robot_dxdy_vector = [handles.data.curr_x - handles.data.prevXpos, handles.data.curr_y - handles.data.prevYpos];
+    robot_dxdy_vector = [handles.data.curr_x - handles.data.prev_centroid(1), handles.data.curr_y - handles.data.prev_centroid(2)];
 
-    % norm the joystick and robot to get directions
-    joystick_direction = joystick_vector / norm(joystick_vector);
-    robot_direction = robot_dxdy_vector / norm(robot_dxdy_vector);
+    % Normalize vectors to get directions
+    if norm(joystick_vector) > 0
+        joystick_direction = joystick_vector / norm(joystick_vector);
+    else
+        joystick_direction = [0, 0];
+    end
 
-    % dot product to see if same direction
-    dot_product = dot(joystick_direction, robot_direction); % if dot product is = 1 then moving in the same direction, leave some flexibility to the alignment - use 0.9 ?
+    if norm(robot_dxdy_vector) > 0
+        robot_direction = robot_dxdy_vector / norm(robot_dxdy_vector);
+    else
+        robot_direction = [0, 0];
+    end
 
-    if ((centroid_displacement > handles.data.centroid_threshold)) %&& (dot_product > 0.9))
+    % Calculate dot product to see if moving in same direction
+    dot_product = dot(joystick_direction, robot_direction);
+    %text(ax, handles.data.resolution(1)/3, handles.data.resolution(2)/5.5, ['              '], 'HorizontalAlignment', 'left', 'Color', 'black');
+    % Wall detection logic
+    % Create a black box for text display
+    text_width = 500;
+    text_height = 60;
+    x_position = handles.data.resolution(1) - text_width - 10; % 10 pixels padding from right edge
+    y_position = 10; % 10 pixels padding from top edge
+    rect_position = [x_position, y_position, text_width, text_height]; % [x y width height]
+    rect_handle = rectangle(ax, 'Position', rect_position, 'FaceColor', 'black', 'EdgeColor', 'none');
+
+    % Initialize time tracking variables if they don't exist
+    if ~isfield(handles.data, 'wall_contact_time')
+        handles.data.wall_contact_time = 0;
+        handles.data.t_start = 0;
+        handles.data.f = 0;
+    end
+
+    if (centroid_displacement < handles.data.centroid_threshold*1.5) && (dot_product > 0.2) && (norm(joystick_vector) > 0.1)
+        % Robot is trying to move in the direction of joystick but can't - wall detected
+        disp('Wall is being hit');
+        Wall = 1;
+
+        % Start timing if this is the first detection
+        if handles.data.wall_contact_time == 0
+            handles.data.t_start = tic;
+        end
+
+        % Calculate elapsed time and force
+        handles.data.wall_contact_time = toc(handles.data.t_start);
+        handles.data.f = min(handles.data.wall_contact_time/5, 1); % Cap force at 1
+
+        % Apply vibration with increasing force
+        joyVibrate(handles.joy, handles.data.f);
+        text(ax, x_position + 10, y_position + text_height/2, sprintf('Wall: Present; Force: %.2f', handles.data.f), 'HorizontalAlignment', 'left', 'Color', 'red');
+    else
         handles.data.prev_centroid = [handles.data.curr_x, handles.data.curr_y];
-        disp('No wall yet');
-        joyVibrate(handles.joy,0);
-    elseif ((centroid_displacement < handles.data.centroid_threshold)) %&& (dot_product > 0.9))
-        disp('Wall is being hit')
-        %%%% vibrate
-        t_start = tic;
-        f = toc/10;
-        joyVibrate(handles.joy,f);
-    else %dot_product < 0.9
-        handles.data.prev_centroid = [handles.data.curr_x, handles.data.curr_y];
-        disp("Not headed in same direction");
-        joyVibrate(handles.joy,0);
+        handles.data.wall_contact_time = 0;
+        handles.data.f = 0;
+        joyVibrate(handles.joy, 0);
+        disp('No wall detected');
+        Wall = 0;
+        text(ax, x_position + 10, y_position + text_height/2, 'Wall: No Wall', 'HorizontalAlignment', 'left', 'Color', 'green');
     end
 
     %%% END LAB 5 CONTROL ADDITIONS
@@ -195,8 +230,7 @@ while (~FS.Stop())
         if (~handles.data.goalReached)
             if settings.dipole_joysitck
                 [handles.data.joyReading] = JoystickActuation(handles.joy);
-                %[u, handles.data] = dipoleJoystick(handles.data);
-                [u] = JoystickActuation(handles.joy); % GRADIENT PULLING CONTROL
+                [u, handles.data] = dipoleJoystick(handles.data);
             else
                 [u, handles.data] = FeedbackControl(handles.data, settings);
             end
@@ -236,6 +270,7 @@ while (~FS.Stop())
         handles.graphics.framerate.String = ['Frame Rate ', num2str(handles.data.frameRateCam)];
         handles.graphics.Xgradient.String = ['X ', num2str(handles.data.curr_x * 1000)];
         handles.graphics.Ygradient.String = ['Y ', num2str(handles.data.curr_y * 1000)];
+        %handles.graphics.Wall.String = ['Wall ', num2str(handles.data.curr_y * 1000)];
 
         if (~handles.data.isLocWorking)
             disp("Localization not working");
@@ -258,4 +293,3 @@ while (~FS.Stop())
     end
 
 end
-
