@@ -196,7 +196,7 @@ while (~FS.Stop())
             if settings.dipole_joysitck
                 [handles.data.joyReading] = JoystickActuation(handles.joy);
                 %[u, handles.data] = dipoleJoystick(handles.data);
-                [u] = JoystickActuation(handles.joy);
+                [u] = JoystickActuation(handles.joy); % GRADIENT PULLING CONTROL
             else
                 [u, handles.data] = FeedbackControl(handles.data, settings);
             end
